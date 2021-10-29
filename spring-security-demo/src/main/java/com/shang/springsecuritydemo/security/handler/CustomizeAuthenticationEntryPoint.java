@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @Description: 匿名用户访问无权限资源时的异常
+ * 匿名用户访问无权限资源时的异常
  */
 @Component
 public class CustomizeAuthenticationEntryPoint implements AuthenticationEntryPoint {

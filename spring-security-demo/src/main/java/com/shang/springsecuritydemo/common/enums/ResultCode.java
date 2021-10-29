@@ -1,7 +1,7 @@
 package com.shang.springsecuritydemo.common.enums;
 
 /**
- * @Description: 返回码定义
+ * 返回码定义
  * 规定:
  * #1表示成功
  * #1001～1999 区间表示参数错误
@@ -13,7 +13,7 @@ public enum ResultCode {
     SUCCESS(200, "成功"),
 
     /* 默认失败 */
-    COMMON_FAIL(999, "失败"),
+    COMMON_FAIL(500, "失败"),
 
     /* 参数错误：1000～1999 */
     PARAM_NOT_VALID(1001, "参数无效"),
@@ -34,6 +34,7 @@ public enum ResultCode {
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限");
+
     private Integer code;
     private String message;
 

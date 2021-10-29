@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @Description: 登出成功处理逻辑
+ * 登出成功处理逻辑
  */
 @Component
 public class CustomizeLogoutSuccessHandler implements LogoutSuccessHandler {

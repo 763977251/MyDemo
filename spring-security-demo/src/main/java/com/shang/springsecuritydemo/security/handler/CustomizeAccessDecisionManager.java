@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * @Description: 访问决策管理器
+ * 访问决策管理器
  */
 @Component
 public class CustomizeAccessDecisionManager implements AccessDecisionManager {

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @Description: 会话信息过期策略
+ * 会话信息过期策略
  */
 @Component
 public class CustomizeSessionInformationExpiredStrategy implements SessionInformationExpiredStrategy {

@@ -12,7 +12,7 @@ import javax.servlet.*;
 import java.io.IOException;
 
 /**
- * @Description: 权限拦截器
+ * 权限拦截器
  */
 @Service
 public class CustomizeAbstractSecurityInterceptor extends AbstractSecurityInterceptor implements Filter {

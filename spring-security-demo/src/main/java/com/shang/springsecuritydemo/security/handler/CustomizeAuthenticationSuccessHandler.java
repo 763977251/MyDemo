@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
- * @Description: 登录成功处理逻辑
+ * 登录成功处理逻辑
  */
 @Component
 public class CustomizeAuthenticationSuccessHandler implements AuthenticationSuccessHandler {

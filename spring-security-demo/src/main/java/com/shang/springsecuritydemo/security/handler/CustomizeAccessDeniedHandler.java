@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @Description: 权限拒绝处理逻辑
+ * 权限拒绝处理逻辑
  */
 @Component
 public class CustomizeAccessDeniedHandler implements AccessDeniedHandler {

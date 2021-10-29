@@ -5,7 +5,7 @@ import com.shang.springsecuritydemo.common.enums.ResultCode;
 import java.io.Serializable;
 
 /**
- * @Description: 统一返回实体
+ * 统一返回实体
  */
 public class JsonResult<T> implements Serializable {
     private Boolean success;
