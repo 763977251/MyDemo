@@ -1,8 +1,8 @@
 package com.shang.springsecuritydemo.security.config;
 
 import com.shang.springsecuritydemo.security.handler.*;
-import com.shang.springsecuritydemo.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
@@ -43,12 +43,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     CustomizeFilterInvocationSecurityMetadataSource securityMetadataSource;
     @Autowired
     private CustomizeAbstractSecurityInterceptor securityInterceptor;
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        //获取用户账号密码及权限信息
-        return new UserDetailsServiceImpl();
-    }
+    @Autowired
+    @Qualifier("userDetailsServiceImpl")
+    private UserDetailsService userDetailsService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -58,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService());
+        auth.userDetailsService(userDetailsService);
     }
 
     @Override

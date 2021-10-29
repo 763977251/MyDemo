@@ -42,7 +42,7 @@ public class CustomizeAuthenticationFailureHandler implements AuthenticationFail
         } else if (e instanceof InternalAuthenticationServiceException) {
             //用户不存在
             result = JsonResult.fail(ResultCode.USER_ACCOUNT_NOT_EXIST);
-        }else{
+        } else {
             //其他错误
             result = JsonResult.fail(ResultCode.COMMON_FAIL);
         }
