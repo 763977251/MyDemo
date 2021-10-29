@@ -42,7 +42,6 @@ public class JsonResult<T> implements Serializable {
         this.data = data;
     }
 
-
     public static JsonResult success() {
         return new JsonResult(true);
     }

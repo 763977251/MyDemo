@@ -16,9 +16,10 @@ public class UserController {
 
     @GetMapping("/getUser")
     public JsonResult getUser() {
-        List<SysUser> users = sysUserService.queryAllByLimit(1, 100);
+        List<SysUser> users = sysUserService.queryAllByLimit(0, 100);
         return JsonResult.success(users);
     }
+
     @GetMapping("/test")
     public JsonResult test() {
         return JsonResult.success("hello world");
