@@ -14,7 +14,7 @@
             <fileNamePattern>${LOG_HOME}/service.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <MaxHistory>120</MaxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>500MB</maxFileSize>
+                <maxFileSize>500MB</maxFileSize> <!-- 单个文件大小 -->
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -29,7 +29,7 @@
             <fileNamePattern>${LOG_HOME}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <MaxHistory>120</MaxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>500MB</maxFileSize>
+                <maxFileSize>500MB</maxFileSize> <!-- 单个文件大小 -->
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <!-- 过滤日志 -->

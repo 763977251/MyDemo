@@ -3,10 +3,7 @@ package com.shang.logdemo.controller;
 import com.shang.logdemo.entity.TestEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 测试Controller
@@ -33,7 +30,7 @@ public class TestController {
         return testEntity;
     }
 
-    @GetMapping("/test4")
+    @PostMapping("/test4")
     public TestEntity test4(@RequestBody TestEntity testEntity){
         LOGGER.info("/test4 {}",testEntity);
         return testEntity;
