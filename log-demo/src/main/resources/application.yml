@@ -1,14 +1,7 @@
+# 服务端口
 server:
   port: 9003
 
-logging:
-  file:
-    name: log/logdemo.log
-  pattern:
-    #???????????
-    console: "%d{HH:mm:ss.SSS} %level[%thread]%logger{15} %msg%n"
-    #????????????
-    file: "%d{HH:mm:ss.SSS} %level[%thread]%logger{15} %msg%n"
-  #?????? ????, loggin.level.root?????
-  level:
-    com.shang.logdemo: trace
+# 日志文件输出地址，在logback-spring.xml文件里使用
+log:
+  home: ./logdemo-log
