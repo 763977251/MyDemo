@@ -1,5 +1,6 @@
 package com.shang.springsecuritydemo.security.config;
 
+import com.shang.springsecuritydemo.security.filter.CustomizeUsernamePasswordAuthenticationFilter;
 import com.shang.springsecuritydemo.security.handler.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -53,6 +55,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * 自定义用户名密码鉴定，支持json格式传入的用户名密码
+     * {@link WebSecurityConfig#configure(HttpSecurity)} 配置方法里用到这个bean
+     * @throws Exception
+     */
+    @Bean
+    CustomizeUsernamePasswordAuthenticationFilter customizeUsernamePasswordAuthenticationFilter() throws Exception {
+        CustomizeUsernamePasswordAuthenticationFilter filter = new CustomizeUsernamePasswordAuthenticationFilter();
+        // 登录成功以及登录失败的处理器由下面configure()方法里移动到这里，否则不生效（不生效原因是因为这个自定义的过滤器会先于默认的过滤器执行）
+        filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        filter.setAuthenticationFailureHandler(authenticationFailureHandler);
+        filter.setAuthenticationManager(authenticationManagerBean());
+        return filter;
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
@@ -80,8 +97,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .formLogin()
                     .permitAll()//允许所有用户
-                    .successHandler(authenticationSuccessHandler)//登录成功处理逻辑
-                    .failureHandler(authenticationFailureHandler)//登录失败处理逻辑
+                    /** 下面配置了自定义的用户名密码校验，所以此处两个处理器不生效了 {@link WebSecurityConfig#customizeUsernamePasswordAuthenticationFilter()} */
+//                    .successHandler(authenticationSuccessHandler)//登录成功处理逻辑
+//                    .failureHandler(authenticationFailureHandler)//登录失败处理逻辑
                 //异常处理(权限拒绝、登录失效等)
                 .and()
                     .exceptionHandling()
@@ -93,5 +111,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .maximumSessions(1)//同一账号同时登录最大用户数
                     .expiredSessionStrategy(sessionInformationExpiredStrategy);//会话失效(账号被挤下线)处理逻辑
         http.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
+        http.addFilterAt(customizeUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }
