@@ -1,0 +1,10 @@
+server:
+  port: 9005
+
+# 更多注释见https://github.com/Wechat-Group/WxJava/tree/develop/spring-boot-starters/wx-java-mp-spring-boot-starter
+wx:
+  mp:
+    app-id: wx9e1629913f8c603e
+    secret: b694e743ac9953b2e0c4f2edc84f950e
+    token: weixinToken123
+    aes-key: boeAesKey
