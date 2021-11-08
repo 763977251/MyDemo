@@ -19,6 +19,14 @@ public class WeixinAuthTokenController {
     @Autowired
     private WxMpService wxMpService;
 
+    /**
+     * 此接口用于配置微信公众号接口token是验证使用
+     * @param signature
+     * @param timestamp
+     * @param nonce
+     * @param echostr
+     * @return
+     */
     @GetMapping("/weixinToken")
     public String authGet(@RequestParam(name = "signature", required = false) String signature,
                           @RequestParam(name = "timestamp", required = false) String timestamp,
@@ -30,10 +38,6 @@ public class WeixinAuthTokenController {
         if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
             throw new IllegalArgumentException("请求参数非法，请核实!");
         }
-//
-//        if (!this.wxMpService.switchover(appid)) {
-//            throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
-//        }
 
         if (wxMpService.checkSignature(timestamp, nonce, signature)) {
             return echostr;

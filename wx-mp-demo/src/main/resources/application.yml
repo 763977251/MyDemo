@@ -7,4 +7,4 @@ wx:
     app-id: wx9e1629913f8c603e
     secret: b694e743ac9953b2e0c4f2edc84f950e
     token: weixinToken123
-    aes-key: boeAesKey
+    aes-key: aesKey
