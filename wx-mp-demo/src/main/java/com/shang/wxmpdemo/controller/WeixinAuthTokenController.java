@@ -1,7 +1,9 @@
 package com.shang.wxmpdemo.controller;
 
+import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +29,7 @@ public class WeixinAuthTokenController {
      * @param echostr
      * @return
      */
-    @GetMapping("/weixinToken")
+    @GetMapping("/weChat/weixinToken")
     public String authGet(@RequestParam(name = "signature", required = false) String signature,
                           @RequestParam(name = "timestamp", required = false) String timestamp,
                           @RequestParam(name = "nonce", required = false) String nonce,
@@ -46,9 +48,16 @@ public class WeixinAuthTokenController {
         return "非法请求";
     }
 
-    @GetMapping("/test")
+    @GetMapping("/weChat/test")
     public String test() throws WxErrorException {
         // this.mpService.getWxMpConfigStorage().getAppId();
         return  this.wxMpService.getAccessToken();
     }
+
+    @GetMapping("/weChat/test/getUserInfo")
+    public WxMpUser getUserInfo(String code) throws WxErrorException {
+        WxOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
+        return  this.wxMpService.getUserService().userInfo(accessToken.getOpenId());
+    }
+
 }
