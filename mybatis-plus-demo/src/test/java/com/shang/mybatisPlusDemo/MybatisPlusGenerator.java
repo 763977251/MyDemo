@@ -17,7 +17,7 @@ public class MybatisPlusGenerator {
         FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/mybatis_plus_demo?useUnicode=true&characterEncoding=utf-8&useSSL=false&&serverTimezone=Asia/Shanghai",
                         "root", "111111")
                 .globalConfig(builder -> {
-                    builder.author("尚高") // 设置作者
+                    builder.author("shang") // 设置作者
 //                            .enableSwagger() // 开启 swagger 模式
                             .fileOverride() // 覆盖已生成文件
                             .dateType(DateType.ONLY_DATE)
