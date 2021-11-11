@@ -31,7 +31,7 @@ public class MybatisPlusGenerator {
                 .strategyConfig(builder -> {
                     builder.addInclude("test_table") // 设置需要生成的表名
                             .addTablePrefix("t_", "b_") // 设置过滤表前缀
-                            .entityBuilder().enableLombok().enableRemoveIsPrefix()
+                            .entityBuilder().enableLombok().enableTableFieldAnnotation()
                             .controllerBuilder().enableRestStyle()
                             .serviceBuilder()
                             .mapperBuilder().enableMapperAnnotation().enableBaseResultMap()
