@@ -12,9 +12,11 @@ public class LambdaTest {
     public void test(){
         TestUser testUser = TestUser.builder().id("1").name("1").build();
         TestUser testUser2 = TestUser.builder().id("2").name("22").build();
-        TestUser testUser3 = TestUser.builder().id("3").name("333").build();
+        TestUser testUser3 = TestUser.builder().id("6").name("333").build();
         TestUser testUser4 = TestUser.builder().id("4").name("4444").build();
         List<TestUser> testUsers = Arrays.asList(testUser, testUser2, testUser3, testUser4);
+
+        // Collectors.toMap() 必须保证testUsers列表里的TestUser::getId唯一，否则lambda方法报错
         Map<String, TestUser> collect = testUsers.stream().collect(Collectors.toMap(TestUser::getId, s -> s));
         System.out.println(collect);
 
