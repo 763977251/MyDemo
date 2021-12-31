@@ -1,0 +1,14 @@
+server:
+  port: 8100
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: after_route
+          uri: https://www.baidu.com
+          predicates:
+            - Path=/visitor/**
+          filters:
+            # ????   ?????? 1 ?????
+            - StripPrefix=1
