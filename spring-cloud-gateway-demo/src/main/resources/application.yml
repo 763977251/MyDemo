@@ -5,10 +5,10 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: after_route
+        - id: rout_test1
           uri: https://www.baidu.com
           predicates:
             - Path=/visitor/**
           filters:
-            # ????   ?????? 1 ?????
+            # StripPrefix=1就代表截取路径的个数
             - StripPrefix=1
