@@ -1,0 +1,8 @@
+server:
+  port: 9009
+
+netty:
+  #端口号
+  port: 9010
+  #IP
+  url: 127.0.0.1
