@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -74,6 +75,10 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if (Objects.equals(msg,"heartbeat")){
+            this.channelWrite(ctx.channel().id(), "heartbeat response");
+            return;
+        }
         System.out.println();
         log.info("加载客户端报文......");
         log.info("【" + ctx.channel().id() + "】" + " :" + msg);
@@ -118,7 +123,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 log.info("Client: " + socketString + " WRITER_IDLE 写超时");
                 ctx.disconnect();
             } else if (event.state() == IdleState.ALL_IDLE) {
-                log.info("Client: " + socketString + " ALL_IDLE 总超时");
+                log.info("Client: " + socketString + " ALL_IDLE 总超时 clientId:"+ctx.channel().id());
                 ctx.disconnect();
             }
         }

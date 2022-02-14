@@ -1,8 +1,14 @@
-package com.shang.websocket.client;
+package com.shang.websocket.handler;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelId;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
@@ -22,6 +28,10 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
      * 计算有多少客户端接入，第一个string为客户端ip
      */
     private static final ConcurrentHashMap<ChannelId, ChannelHandlerContext> CLIENT_MAP = new ConcurrentHashMap<>();
+
+    /** 客户端请求的心跳命令 */
+    private static final ByteBuf HEARTBEAT_SEQUENCE =
+            Unpooled.unreleasableBuffer(Unpooled.copiedBuffer("heartbeat", CharsetUtil.UTF_8));
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -46,7 +56,6 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-
         log.info("回写数据:" + msg);
     }
 
@@ -79,5 +88,22 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         ctx.write(msg + " 时间：" + new Date());
         //刷新缓存区
         ctx.flush();
+    }
+
+    /**
+     * 如果4s没有收到写请求，则向服务端发送心跳请求
+     * @param ctx
+     * @param evt
+     * @throws Exception
+     */
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if(evt instanceof IdleStateEvent) {
+            IdleStateEvent event = (IdleStateEvent) evt;
+            if(IdleState.WRITER_IDLE.equals(event.state())) {
+                ctx.writeAndFlush(HEARTBEAT_SEQUENCE.duplicate()).addListener(ChannelFutureListener.CLOSE_ON_FAILURE) ;
+            }
+        }
+        super.userEventTriggered(ctx, evt);
     }
 }
