@@ -42,7 +42,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.shang.apiFoxJava.ResEncrypt</mainClass>
+                                    <mainClass>com.shang.apiFoxJava.GetFileMd5</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

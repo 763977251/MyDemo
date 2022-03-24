@@ -29,7 +29,7 @@ public class MybatisPlusGenerator {
                             .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "D://generate")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("xj_task_make") // 设置需要生成的表名
+                    builder.addInclude("t_organization") // 设置需要生成的表名
                             .addTablePrefix("t_", "b_", "xj_") // 设置过滤表前缀
                             .entityBuilder().enableLombok().enableTableFieldAnnotation()
                             .controllerBuilder().enableRestStyle()
