@@ -4,6 +4,8 @@ import org.assertj.core.util.DateUtil;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -96,6 +98,27 @@ public class DateTest {
         Date today = DateUtil.parseDatetime("2022-03-16T00:00:00");
         Date startDay = DateUtil.parseDatetime("2022-03-16T19:00:00");
         System.out.println(cn.hutool.core.date.DateUtil.isSameDay(startDay, today));
+    }
+
+    @Test
+    public void test1212(){
+        int hour = LocalDateTime.now().getHour();
+        System.out.println(hour);
+        LocalDate localDate = LocalDate.now().plusDays(-1);
+        System.out.println(localDate.toString());
+
+        Integer time = 23;
+        LocalDateTime start;
+        LocalDateTime end;
+        if (time < 8){
+            start = LocalDateTime.of(localDate, LocalTime.MIN).plusDays(1).plusHours(time);
+            end = LocalDateTime.of(localDate, LocalTime.MIN).plusDays(1).plusHours(time+1);
+        } else {
+            start = LocalDateTime.of(localDate, LocalTime.MIN).plusHours(time);
+            end = LocalDateTime.of(localDate, LocalTime.MIN).plusHours(time+1);
+        }
+        System.out.println(start.isAfter(end));
+        System.out.println(end.getMinute());
     }
 
 }

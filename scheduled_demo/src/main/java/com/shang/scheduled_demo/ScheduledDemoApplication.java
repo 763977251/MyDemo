@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableScheduling
+@EnableScheduling //定时任务注解
 @EnableSchedulerLock(defaultLockAtMostFor = "PT30S")//定时任务锁,默认时间30S
 public class ScheduledDemoApplication {
 
