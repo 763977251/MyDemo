@@ -18,16 +18,20 @@ import javax.validation.constraints.NotNull;
 @RestController
 public class TestController {
 
+    /**
+     * 测试全局异常是否生效
+     */
     @GetMapping("/testGlobalException")
     public JsonResponse<String> testGlobalException() {
         throw new ConditionException("发生了异常");
     }
 
     /**
-     * 测试参数校验1
+     * 测试get请求的参数校验功能
      * @param name 姓名
      * @param age 年龄
      */
+    @Validated
     @GetMapping("/testParam1")
     public JsonResponse<String> testParam1(@NotEmpty(message = "姓名不能为空") String name,
                                            @NotNull(message = "年龄不能为空") Integer age) {
@@ -35,7 +39,8 @@ public class TestController {
     }
 
     /**
-     * 测试参数校验2
+     * 测试get请求的参数校验功能2
+     * 测试使用对象接收参数时的参数校验
      */
     @GetMapping("/testParam2")
     public JsonResponse<TestParam> testParam2(@Valid TestParam testParam) {
@@ -43,7 +48,7 @@ public class TestController {
     }
 
     /**
-     * 测试参数校验3
+     * 测试post请求的参数校验功能
      */
     @PostMapping("/testParam3")
     public JsonResponse<String> testParam3(@NotEmpty(message = "姓名不能为空") String name,
@@ -52,7 +57,8 @@ public class TestController {
     }
 
     /**
-     * 测试参数校验4
+     * 测试post请求的参数校验功能2
+     * 测试使用对象接收参数时的参数校验
      */
     @PostMapping("/testParam4")
     public JsonResponse<TestParam> testParam4(@Valid TestParam testParam) {
@@ -60,7 +66,8 @@ public class TestController {
     }
 
     /**
-     * 测试参数校验5
+     * 测试post请求接受json格式参数校验功能
+     * // @Valid 不仅校验当前对象的属性，并且对象类型的属性使用注解@Valid也会校验
      */
     @PostMapping("/testParam5")
     public JsonResponse<TestParam2> testParam5(@Valid @RequestBody TestParam2 testParam2) {
@@ -68,7 +75,8 @@ public class TestController {
     }
 
     /**
-     * 测试参数校验6
+     * 测试post请求接受json格式参数校验功能2
+     * // @Validated 不仅校验当前对象的属性，并且对象类型的属性使用注解@Valid也会校验
      */
     @PostMapping("/testParam6")
     public JsonResponse<TestParam2> testParam6(@Validated @RequestBody TestParam2 testParam2) {
@@ -76,7 +84,8 @@ public class TestController {
     }
 
     /**
-     * 测试参数校验7
+     * 测试post请求接受json格式参数校验功能3
+     * 检验不通的class类型
      */
     @PostMapping("/testParam7")
     public JsonResponse<TestParam2> testParam7(@Validated(TestParam2.Add.class) @RequestBody TestParam2 testParam2) {
