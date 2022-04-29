@@ -1,0 +1,56 @@
+### 前言
+
+> 我个人认为递归的思路来写这一题是很清晰且易懂的，我们只需要仔细的考虑边界的问题即可。
+
+&emsp;&emsp;这一题是 “从前序与中序遍历序列构造二叉树” 对应的还有一题是[106. 从中序与后序遍历序列构造二叉树](https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)。这两个题的思路都是一样的，换汤不换药，做完这个题之后，大家去做做另一个，看看自己掌握的怎么样。
+
+### 思路分析
+
+![image.png](https://pic.leetcode-cn.com/1647483105-OJDiCZ-image.png)
+
+&emsp;&emsp; 我画了一张图，大家对照这张图来看。这一题他给了我们两个数组，一个是前序遍历、另一个是中序遍历，我们要想构造一个树我们必须找到他的头节点对吧。显然，`前序遍历的第一个元素`就是他的头节点。知道了头节点，我们可以在中序遍历中找到头节点的位置`index`。知道了这些信息我们就可以求出来左子树在数组中的长度： `index - inoStart`。（inoStart 是中序遍历的起点）。
+&emsp;&emsp;知道了上面的信息我们开始构建二叉树：
+1. 获取树的头节点 `int val =  preorder[preStart]` (preStart是前序遍历的起始值)。然后我们直接构建二叉树 `TreeNode root = new TreeNode(val)`
+2. 构建左树：`root.left` 我们知道该二叉树的左子树的长度为 `int leftSize = index - inoStart;`
+   - 所以我们可以推出二叉树的左子树在`前序遍历`的位置是`[preStart + 1 ，preStart + leftSize]`。
+   - 同理：二叉树的左子树在`中序遍历`的位置是`[inoStart , index - 1]`。
+3. 构建右树：`root.right`
+   - 二叉树的右子树在`前序遍历`的位置是` [preStart + leftSize + 1,preEnd]`。
+   - 同理：二叉树右子树在`中序遍历`的位置是`[index + 1 , inoEnd]`。
+     代码如下：👇👇👇👇
+
+### 代码
+
+* java
+
+```java
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        return build(preorder,inorder,0,preorder.length - 1,0,inorder.length - 1);
+    }
+    TreeNode build(int[] preorder, int[] inorder,int preStart,int preEnd,int inoStart,int inoEnd){
+        //base case
+        if(preStart > preEnd || inoStart > inoEnd){
+            return null;
+        }
+        //树的根节点
+        int val = preorder[preStart];
+        TreeNode root =  new TreeNode(val);
+        //查找根节点在中序遍历的位置
+        int index = 0; 
+        for(int i = inoStart;i <= inoEnd;i++){
+            if(inorder[i] == val){
+                index = i;
+                break;
+            }
+        }
+        //计算左子树在数组中的长度
+        int leftSize = index - inoStart;
+        //递归构建。
+        root.left = build(preorder,inorder,preStart + 1,preStart + leftSize,inoStart , index - 1);
+        root.right = build(preorder,inorder,preStart + leftSize + 1,preEnd,index + 1 , inoEnd);
+        return root;
+    }
+}
+```
+

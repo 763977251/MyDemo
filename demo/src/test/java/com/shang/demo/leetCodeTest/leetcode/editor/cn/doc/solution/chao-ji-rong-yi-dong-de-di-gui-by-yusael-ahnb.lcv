@@ -1,0 +1,72 @@
+![Snipaste_2022-03-11_21-08-11.png](https://pic.leetcode-cn.com/1647004106-EFRUaZ-Snipaste_2022-03-11_21-08-11.png)
+
+* bash
+
+```bash
+对于以下数据：
+preorder = [3,9,6,10,20,15,7] # 先序遍历
+inorder = [6,9,10,3,15,20,7] # 中序遍历
+
+1、根据[先序遍历]，可以确定【3】为根节点，然后根据【3】在[中序遍历]进行划分：
+- [6, 9, 10] 是【左子树】
+- [3] 是此轮的【根节点】
+- [15, 20, 7] 是【右子树】
+
+2、对【左子树】进行同样的操作，递归传入的数组：
+preorder = [9, 6, 10] # 先序遍历
+inorder = [6, 9, 10] # 中序遍历
+
+3、对【右子树】进行同样的操作，递归传入的数组：
+preorder = [20, 15, 7] # 先序遍历
+inorder = [15, 20, 7] # 中序遍历
+```
+
+* md
+
+```md
+方法步骤归纳：
+1. 由【先序遍历第一个数字】得出根节点
+2. 由【中序遍历结合根节点的值得出】：哪些数字是左子树，哪些数字是右子树，并划分出来
+3. 重复 1-2 步
+```
+
+* java
+
+```java
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        if (preorder.length == 0) return null;
+
+        // [先序遍历]可以直接知道：根节点的值 rootVal
+        int rootVal = preorder[0]; // 3
+        // 在[中序遍历]中寻找 rootVal 的索引
+        int rootIndex = 0;
+        for (int i = 0; i < inorder.length; i++) {
+            if (inorder[i] == rootVal) {
+                rootIndex = i; // 3
+                break;
+            }
+        }
+
+        // 构造根节点
+        TreeNode root = new TreeNode(rootVal);
+
+        // 递归
+        root.left = buildTree(
+                // [9, 6, 10]
+                Arrays.copyOfRange(preorder, 1, rootIndex + 1),
+                // [6, 9, 10]
+                Arrays.copyOfRange(inorder, 0, rootIndex)
+        );
+        root.right = buildTree(
+                // [20, 15, 7]
+                Arrays.copyOfRange(preorder, rootIndex + 1, preorder.length),
+                // [15, 20, 7]
+                Arrays.copyOfRange(inorder, rootIndex + 1, inorder.length)
+        );
+
+        return root;
+    }
+}
+```
+

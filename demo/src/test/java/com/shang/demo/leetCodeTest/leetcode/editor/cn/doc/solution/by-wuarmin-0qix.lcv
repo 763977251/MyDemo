@@ -1,0 +1,75 @@
+### 方法一：无脑递归(不多说，没人喜欢)-超时
+
+* []
+
+```C++
+class Solution {
+public:
+    int fib(int n) {
+        int mod = 1e9 + 7;
+        if (n <= 1) return n;
+        
+        return (fib(n-1) + fib(n-2)) % mod;
+    }
+};
+```
+
+### 方法二：动态规划
+
+1、状态定义： dp[i] 表示 斐波那契数列第 i 个数字
+
+2、转移方程： dp[i] = dp[i-1] + dp[i-2]
+
+3、初始状态： dp[0] = 0, dp[1]=1
+
+4、返回值： f[n]
+
+* []
+
+```C++
+class Solution {
+public:
+    int fib(int n) {
+       int mod = 1e9 + 7;
+       if (n <= 1) return n;
+
+        vector<int> dp(n+1);
+        dp[0] = 0;
+        dp[1] = 1;
+        for (int i = 2; i <= n; ++ i ) {
+            dp[i] = dp[i-1] + dp[i-2];
+            dp[i] %= mod;
+        }
+        
+        return dp[n];
+    }
+};
+```
+
+* []
+
+```C++
+class Solution {
+public:
+    int fib(int n) {
+        int mod = 1000000007;
+        if (n <= 1) return n;
+        
+        int one = 1, zero = 0, sum = 0;
+        
+        for (int i = 2; i <= n; ++ i) {
+            sum = (one + zero) % mod;
+            zero = one;
+            one = sum;          
+        }
+        
+        return sum;        
+    }
+};
+```
+
+**复杂度分析：**
+
+时间复杂度：O(n)。
+
+空间复杂度：O(1)。

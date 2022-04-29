@@ -1,0 +1,78 @@
+### 解题思路
+
+#### DFS + 剪枝
+
+DFS：深度搜索二叉树
+剪枝：遇到不符合条件的情况，提前返回，即答案中代码的
+
+* 
+
+```
+// 如果越界(行或列) 或 匹配到的字符与 word 当前遍历到的下标不同，直接返回
+if(i >= m || i < 0 || j >= n || j < 0 || board[i][j] !== word[k])
+    return false;
+```
+
+#### DFS 解析：
+
++ 递归参数： 当前元素在矩阵 board 中的行列索引 i 和 j ，当前目标字符在 word 中的索引 k 。
++ 终止条件：
+  + 返回 false：
+    + 行或列索引越界
+    + 当前矩阵元素与目标字符不同
+    + 当前矩阵元素已访问过（通过将访问过的字符置空）
+  + 返回 true： k = word.length - 1 ，即字符串 word 已全部匹配。
++ 递推过程：
+  + 标记当前矩阵元素： 将 board[i][j] 修改为 空字符 '' ，代表此元素已访问过，防止之后搜索时重复访问。
+  + 搜索下一单元格： 朝当前元素的 上、下、左、右 四个方向开启下层递归，使用 或 连接 （代表只需找到一条可行路径就直接返回，不再做后续 DFS ），并记录结果至 res 。
+  + 还原当前矩阵元素： 将 board[i][j] 元素还原至初始值，即 word[k] 。
+  + 返回值： 返回布尔量 res ，代表是否搜索到目标字符串。
+
+##### 代码中已经做了很详细的注释，可将上述讲解配合代码注释一起食用
+
+<br /> ### 代码
+
+* javascript
+
+```javascript
+/**
+ * @param {character[][]} board
+ * @param {string} word
+ * @return {boolean}
+ */
+var exist = function(board, word) {
+    const dfs = (i, j, k) => {
+        // 如果越界(行或列) 或 匹配到的字符与 word 当前遍历到的下标不同，直接返回
+        if(i >= m || i < 0 || j >= n || j < 0 || board[i][j] !== word[k])
+            return false;
+        // 如果长度一样了，说明找到该路径了
+        if(k === word.length - 1)
+            return true;
+        // 置空表明已经遍历过该字符了
+        board[i][j] = '';
+        // 在置空表明已经遍历过该字符了的前提下，继续递归上下右左看是否有满足等于单词的路径，只要有一个路径满足就行，所以 || 连接
+        let res = dfs(i - 1, j, k + 1) || dfs(i + 1, j, k + 1) || dfs(i, j + 1, k + 1) || dfs(i, j - 1, k + 1);
+        // 上面递归完后，要将字符变回来，复原现场，毕竟两层 for 循环和后面的递归调用 每次都要用到 board 数组
+        board[i][j] = word[k];
+        return res;
+    }
+
+    // 原数组 board 每个方格都可以看做是开始遍历的起点
+    let m = board.length; n = board[0].length;
+    for(let i = 0; i < m; i++) {
+        for(let j = 0; j < n; j++) {
+            if(dfs(i, j, 0))
+                return true;
+        }
+    }
+    return false;
+};
+
+```
+
+<br /> &gt; **觉得有用可以给我点个赞噢~谢谢**
+
+#### 大家也可以关注我的公众号一起成长 @ Smooth前端成长记录
+
+<br />
+
