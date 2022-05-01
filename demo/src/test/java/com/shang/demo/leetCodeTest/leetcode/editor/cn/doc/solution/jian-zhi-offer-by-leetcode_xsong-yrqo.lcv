@@ -1,0 +1,55 @@
+### 解题思路
+
+1. 设数组dp记录0 ~ n 剪绳子的最大乘积
+2. 两层遍历：第一层表示绳子的长度 第二层用来表示第一段减去的长度。要想求最大值，有两种情况：
+   - 剪绳子：剪绳子的话乘积就是 j * dp[i - j] 减去第一段的长度 * 剩下长度的最大值
+   - 剪第一段，第二段不剪，直接 j * (i - j ) 当前的长度 * 剩下的长度
+   - 不剪 dp[i]
+
+### 问题和优化
+
+> 看了评论区一些大佬的优化建议，我仔细琢磨了下。
+
+1. 首先是为什么j从2开始，因为我一开始的代码是遍历所有的情况，所以剪的长度为1的时候，跟剪得长度为 i - 1的时候情况是一样的。
+2. 我既然想到了重复的情况，但我为啥没想到 j 剪两段的时候，跟 i - 2的时候的情况是一样的呢？我真傻，真的。所以，j从1开始，到i / 2 的时候就已经包含了所有的情况。我们直接修改for循环的条件即可。
+
+### 一开始的题解
+
+* java
+
+```java
+class Solution {
+    public int cuttingRope(int n) {
+        int[] dp = new int[n + 1];
+        dp[2] = 1;
+        for(int i = 3; i < n + 1; i++){
+            for(int j = 2; j < i; j++){
+                dp[i] = Math.max(dp[i], Math.max(j * (i - j), j * dp[i - j]));
+            }
+        }
+        return dp[n];
+    }
+}
+
+```
+
+### 优化后的题解
+
+* java
+
+```java
+class Solution {
+    public int cuttingRope(int n) {
+        int[] dp = new int[n + 1];
+        dp[2] = 1;
+        for(int i = 3; i < n + 1; i++){
+            //这里减去的长度从1 到 i /2 就包含了所有的情况
+            for(int j = 1; j <= i / 2; j++){
+                dp[i] = Math.max(dp[i], Math.max(j * (i - j), j * dp[i - j]));
+            }
+        }
+        return dp[n];
+    }
+}
+```
+
