@@ -1,5 +1,3 @@
-package ${package.Controller};
-
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -81,7 +79,7 @@ public class ${table.controllerName} {
     @GetMapping(value = "/${table.entityPath}/page")
     public JsonResponse< PageResult<${entity}>> page(@RequestParam Integer pageNo, @RequestParam Integer pageSize){
         PageResult<${entity}> pageInfo = service.selectPage(pageNo,pageSize);
-        return JsonResponse.success(pageInfo);
+        return new JsonResponse<>(pageInfo);
     }
 
     /**
@@ -89,7 +87,7 @@ public class ${table.controllerName} {
     */
     @GetMapping(value = "/${table.entityPath}/detail")
     public JsonResponse<${entity}> detail(@RequestParam <#list table.fields as field><#if field.keyFlag>${field.propertyType}</#if></#list> id){
-        return JsonResponse.success(service.detail(id));
+        return new JsonResponse<>(service.detail(id));
     }
 
 }

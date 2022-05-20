@@ -15,7 +15,7 @@ public class MybatisPlusGenerator {
      * @param args
      */
     public static void main(String[] args) {
-        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/zpark_bmot?useUnicode=true&characterEncoding=utf-8&useSSL=false&&serverTimezone=Asia/Shanghai",
+        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/zpark-changxin?useUnicode=true&characterEncoding=utf-8&useSSL=false&&serverTimezone=Asia/Shanghai",
                         "root", "111111")
                 .globalConfig(builder -> {
                     builder.author("shang") // 设置作者
@@ -38,7 +38,7 @@ public class MybatisPlusGenerator {
                     ;
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("t_user") // 设置需要生成的表名
+                    builder.addInclude("t_eq_linkage_detail_type") // 设置需要生成的表名
                             .addTablePrefix("t_", "b_", "xj_") // 设置过滤表前缀
                             // entity配置
                             .entityBuilder()
@@ -54,8 +54,7 @@ public class MybatisPlusGenerator {
                             .formatServiceImplFileName("%sService") // 设置Impl名称不带Impl（因为需要配置不生成service的接口类）
                             // mapper配置
                             .mapperBuilder()
-                            .enableMapperAnnotation()
-                            .enableBaseResultMap()
+                            .enableMapperAnnotation();
                     ;
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板

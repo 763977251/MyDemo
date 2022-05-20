@@ -1,8 +1,4 @@
-package ${package.ServiceImpl};
 
-import ${package.Entity}.${entity};
-import ${package.Mapper}.${table.mapperName};
-import ${package.Service}.${table.serviceName};
 import ${superServiceImplClassPackage};
 import org.springframework.stereotype.Service;
 
@@ -51,14 +47,14 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         Page<${entity}> page = new Page<>(pageNo,pageSize);
         LambdaQueryWrapper<${entity}> queryWrapper = new LambdaQueryWrapper<>();
         this.page(page, queryWrapper);
-        return new PageResult<>(Math.toIntExact(page.getTotal()),page.getRecords())
+        return new PageResult<>(Math.toIntExact(page.getTotal()),page.getRecords());
     }
 
     /**
     * ${table.comment!} 根据id查询详情
     */
     public ${entity} detail(<#list table.fields as field><#if field.keyFlag>${field.propertyType}</#if></#list> id){
-        return mapper.getById(id);
+        return this.getById(id);
     }
 
 }
