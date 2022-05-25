@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ITestTableService extends IService<TestTable> {
 
+    int insertOrUpdate(TestTable testTable);
 }

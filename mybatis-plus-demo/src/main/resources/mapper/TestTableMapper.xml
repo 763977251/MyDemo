@@ -10,4 +10,10 @@
         <result column="is_deleted" property="deleted" />
     </resultMap>
 
+    <insert id="insertOrUpdate">
+        insert into test_table (id,code, name) value (#{testTable.id}, #{testTable.code}, #{testTable.name})
+        on duplicate key update
+        name = #{testTable.name}
+    </insert>
+
 </mapper>

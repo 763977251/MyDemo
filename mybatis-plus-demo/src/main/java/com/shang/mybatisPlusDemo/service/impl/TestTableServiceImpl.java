@@ -19,4 +19,9 @@ public class TestTableServiceImpl extends ServiceImpl<TestTableMapper, TestTable
     public void test(){
         baseMapper.selectById(1L);
     }
+
+    @Override
+    public int insertOrUpdate(TestTable testTable) {
+        return baseMapper.insertOrUpdate(testTable);
+    }
 }

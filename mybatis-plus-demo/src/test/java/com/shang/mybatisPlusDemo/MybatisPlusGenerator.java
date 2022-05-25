@@ -38,7 +38,7 @@ public class MybatisPlusGenerator {
                     ;
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("t_eq_linkage_detail_type") // 设置需要生成的表名
+                    builder.addInclude("t_eq_linkage_record") // 设置需要生成的表名
                             .addTablePrefix("t_", "b_", "xj_") // 设置过滤表前缀
                             // entity配置
                             .entityBuilder()

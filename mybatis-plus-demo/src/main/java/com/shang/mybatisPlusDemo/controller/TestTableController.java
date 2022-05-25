@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.shang.mybatisPlusDemo.entity.TestTable;
 import com.shang.mybatisPlusDemo.service.ITestTableService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -28,6 +25,11 @@ public class TestTableController {
     public Page<TestTable> test(){
         Page<TestTable> page = new Page<>();
         return testTableService.page(page);
+    }
+
+    @PostMapping("/add")
+    public int add(@RequestBody TestTable testTable){
+        return testTableService.insertOrUpdate(testTable);
     }
 
 }
