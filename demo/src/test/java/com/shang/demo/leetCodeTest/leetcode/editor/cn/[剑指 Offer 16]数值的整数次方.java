@@ -40,7 +40,7 @@ package com.shang.demo.leetCodeTest.leetcode.editor.cn;
 
 
 //leetcode submit region begin(Prohibit modification and deletion)
-class Solution {
+class Solution1 {
     public double myPow(double x, int n) {
         if (n == 0){
             return 1L;

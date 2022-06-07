@@ -43,7 +43,6 @@ public class WebSocketSessionManager {
                 // 关闭连接
                 session.close();
             } catch (IOException e) {
-                // todo: 关闭出现异常处理,添加错误处理逻辑
                 e.printStackTrace();
             }
         }

@@ -55,19 +55,16 @@ public class MyWebSocketClient extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake arg0) {
-        // TODO Auto-generated method stub
         LOG.info("------ MyWebSocket onOpen ------");
     }
 
     @Override
     public void onClose(int arg0, String arg1, boolean arg2) {
-        // TODO Auto-generated method stub
         LOG.info("------ MyWebSocket onClose ------");
     }
 
     @Override
     public void onError(Exception arg0) {
-        // TODO Auto-generated method stub
         LOG.info("------ MyWebSocket onError ------");
     }
 

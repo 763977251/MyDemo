@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Base64;
 
 public class FileTest {
 
@@ -58,5 +60,19 @@ public class FileTest {
             System.out.println((char) b1);
         }
         fis.close();
+    }
+
+    /**
+     * base64转图片
+     */
+    @Test
+    public void test5() throws IOException {
+        File file = new File("D:\\DEMO\\github\\MyDemo\\demo\\src\\test\\java\\com\\shang\\demo\\fileTest\\base64Text.txt");
+        FileInputStream fis = new FileInputStream(file);
+        byte[] byteArray = fis.readAllBytes();
+        FileOutputStream write = new FileOutputStream(new File("D:/te111.jpg"));
+        byte[] decoderBytes = Base64.getDecoder().decode(new String(byteArray));
+        write.write(decoderBytes);
+        write.close();
     }
 }
