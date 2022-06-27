@@ -25,7 +25,7 @@ public class MybatisPlusGenerator {
                             .outputDir("D://generate"); // 指定输出目录
                 })
                 .packageConfig(builder -> {
-                    builder.parent("com.zxy.zpark") // 设置父包名
+                    builder.parent("com.zxy.zpark.logistics") // 设置父包名
 //                            .moduleName("mybatis-plus-demo") // 设置父包模块名
                             .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "D://generate")) // 设置mapperXml生成路径
                             .serviceImpl("service") // 设置service实现类的包路径
@@ -38,7 +38,7 @@ public class MybatisPlusGenerator {
                     ;
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("t_eq_linkage_record") // 设置需要生成的表名
+                    builder.addInclude("t_people_effect") // 设置需要生成的表名
                             .addTablePrefix("t_", "b_", "xj_") // 设置过滤表前缀
                             // entity配置
                             .entityBuilder()

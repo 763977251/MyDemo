@@ -23,7 +23,7 @@ public class MyWebSocketClient extends WebSocketClient {
 
     static {
         try {
-            socketUrl = new URI("ws://127.0.0.1:9009/ws/123");
+            socketUrl = new URI("ws://127.0.0.1:9009/ws");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -34,22 +34,23 @@ public class MyWebSocketClient extends WebSocketClient {
     }
 
     @PostConstruct
-    public void init() throws URISyntaxException {
+    public void init() {
         LOG.info("进入init方法");
+        addHeader("token", "1234123");
+//        setConnectionLostTimeout(30); //用于检查丢失连接的间隔的设置器 值小于或等于 0 会导致检查被停用 以秒为单位的间隔
         this.connect();
         CompletableFuture.runAsync(() -> {
-            try {
-                while (true) {
+            while (true) {
+                try {
                     Thread.sleep(10000);
                     if (!this.isOpen()) {
                         LOG.info("init--reconnect");
                         this.reconnect();
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
-
         });
     }
 
