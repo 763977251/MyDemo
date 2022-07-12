@@ -2,6 +2,7 @@ package com.shang.miniodemo.controller;
 
 import com.shang.miniodemo.common.Result;
 import com.shang.miniodemo.config.MinIoConfig;
+import com.shang.miniodemo.dto.MinIoUploadResDTO;
 import com.shang.miniodemo.utils.MinIoUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +20,7 @@ public class MinIoController {
     private MinIoConfig minIoConfig;
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public Result upload(@RequestParam(value = "file") MultipartFile file){
+    public Result<MinIoUploadResDTO> upload(@RequestParam(value = "file") MultipartFile file){
         try {
             return Result.ok(minIoUtils.upload(file,minIoConfig.getBucketName(),null));
         } catch (Exception e) {
@@ -38,7 +39,7 @@ public class MinIoController {
      */
     @GetMapping("/minFileUrl")
     public Result<String> minFileUrl(@RequestParam("minFileName")String minFileName){
-        return Result.ok(minIoUtils.getObjectUrl(minIoConfig.getBucketName(),minFileName,1));
+        return Result.ok(minIoUtils.getObjectUrl(minIoConfig.getBucketName(),minFileName));
     }
 }
 

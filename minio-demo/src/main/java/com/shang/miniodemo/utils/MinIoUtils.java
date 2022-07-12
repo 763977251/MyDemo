@@ -234,6 +234,18 @@ public class MinIoUtils {
         return deleteErrorNames;
     }
 
+    /**
+     * 获取访问对象的外链地址
+     * 获取文件的下载url
+     *
+     * @param bucketName 存储桶名称
+     * @param objectName 对象名称
+     * @return viewUrl
+     */
+    @SneakyThrows
+    public String getObjectUrl(String bucketName, String objectName) {
+        return getObjectUrl(bucketName, objectName, null);
+    }
 
     /**
      * 获取访问对象的外链地址
@@ -619,6 +631,9 @@ public class MinIoUtils {
      * @return expiry
      */
     private static int expiryHandle(Integer expiry) {
+        if (expiry == null){
+            return 604800;
+        }
         expiry = expiry * 60;
         if (expiry > 604800) {
             return 604800;

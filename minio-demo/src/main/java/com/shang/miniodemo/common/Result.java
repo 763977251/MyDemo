@@ -45,8 +45,8 @@ public class Result<T> implements Serializable {
         return new Result();
     }
 
-    public static <T> Result ok(T data) {
-        return new Result(data);
+    public static <T> Result<T> ok(T data) {
+        return new Result<T>(data);
     }
 
     public static <T> Result ok(Integer code, String msg) {
