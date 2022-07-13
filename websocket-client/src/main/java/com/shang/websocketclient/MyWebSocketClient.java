@@ -23,7 +23,7 @@ public class MyWebSocketClient extends WebSocketClient {
 
     static {
         try {
-            socketUrl = new URI("ws://127.0.0.1:9009/ws");
+            socketUrl = new URI("ws://10.69.78.104:9009/ws/123");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -66,6 +66,7 @@ public class MyWebSocketClient extends WebSocketClient {
 
     @Override
     public void onError(Exception arg0) {
+        arg0.printStackTrace();
         LOG.info("------ MyWebSocket onError ------");
     }
 

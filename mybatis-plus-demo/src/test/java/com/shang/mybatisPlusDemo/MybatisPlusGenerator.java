@@ -15,8 +15,8 @@ public class MybatisPlusGenerator {
      * @param args
      */
     public static void main(String[] args) {
-        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/zpark-changxin?useUnicode=true&characterEncoding=utf-8&useSSL=false&&serverTimezone=Asia/Shanghai",
-                        "root", "111111")
+        FastAutoGenerator.create("jdbc:mysql://10.251.181.49:3306/zpark_HQ?useUnicode=true&characterEncoding=utf-8&useSSL=false&&serverTimezone=Asia/Shanghai",
+                        "zpark_HQ", "zpark@20220613!")
                 .globalConfig(builder -> {
                     builder.author("shang") // 设置作者
 //                            .enableSwagger() // 开启 swagger 模式
@@ -38,7 +38,7 @@ public class MybatisPlusGenerator {
                     ;
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("t_people_effect") // 设置需要生成的表名
+                    builder.addInclude("t_monitor_main") // 设置需要生成的表名
                             .addTablePrefix("t_", "b_", "xj_") // 设置过滤表前缀
                             // entity配置
                             .entityBuilder()
