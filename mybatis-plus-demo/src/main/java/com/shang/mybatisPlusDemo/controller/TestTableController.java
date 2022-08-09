@@ -2,10 +2,13 @@ package com.shang.mybatisPlusDemo.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.shang.mybatisPlusDemo.common.JsonResponse;
 import com.shang.mybatisPlusDemo.entity.TestTable;
 import com.shang.mybatisPlusDemo.service.ITestTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * @since 2021-11-08
  */
 @RestController
-@RequestMapping("/test-table")
+@RequestMapping
 public class TestTableController {
     @Autowired
     protected ITestTableService testTableService;
@@ -27,9 +30,14 @@ public class TestTableController {
         return testTableService.page(page);
     }
 
-    @PostMapping("/add")
+    @PostMapping("/test-table/add")
     public int add(@RequestBody TestTable testTable){
         return testTableService.insertOrUpdate(testTable);
+    }
+
+    @GetMapping("/test-table/list")
+    public JsonResponse<List<TestTable>> list(){
+        return new JsonResponse<>(testTableService.list());
     }
 
 }

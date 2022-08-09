@@ -15,8 +15,8 @@ public class MybatisPlusGenerator {
      * @param args
      */
     public static void main(String[] args) {
-        FastAutoGenerator.create("jdbc:mysql://10.251.181.49:3306/zpark_HQ?useUnicode=true&characterEncoding=utf-8&useSSL=false&&serverTimezone=Asia/Shanghai",
-                        "zpark_HQ", "zpark@20220613!")
+        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/zpark-changxin?useUnicode=true&characterEncoding=utf-8&useSSL=false&&serverTimezone=Asia/Shanghai",
+                        "root", "111111")
                 .globalConfig(builder -> {
                     builder.author("shang") // 设置作者
 //                            .enableSwagger() // 开启 swagger 模式
@@ -25,7 +25,7 @@ public class MybatisPlusGenerator {
                             .outputDir("D://generate"); // 指定输出目录
                 })
                 .packageConfig(builder -> {
-                    builder.parent("com.zxy.zpark.logistics") // 设置父包名
+                    builder.parent("com.zxy.zpark.superMarket") // 设置父包名
 //                            .moduleName("mybatis-plus-demo") // 设置父包模块名
                             .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "D://generate")) // 设置mapperXml生成路径
                             .serviceImpl("service") // 设置service实现类的包路径
@@ -38,7 +38,7 @@ public class MybatisPlusGenerator {
                     ;
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("t_monitor_main") // 设置需要生成的表名
+                    builder.addInclude("t_vehicle_statistics","t_vehicle_time_segment_statistics") // 设置需要生成的表名
                             .addTablePrefix("t_", "b_", "xj_") // 设置过滤表前缀
                             // entity配置
                             .entityBuilder()
