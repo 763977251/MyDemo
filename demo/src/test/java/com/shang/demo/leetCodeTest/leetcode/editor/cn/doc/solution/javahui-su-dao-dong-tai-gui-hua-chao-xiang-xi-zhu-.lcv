@@ -1,0 +1,118 @@
+## 思路一：回溯法
+
+这种匹配思路其实就是不断地减掉s和p的可以匹配首部，直至一个或两个字符串被减为空的时候，根据最终情况来得出结论。
+
+如果只是两个普通字符串进行匹配，按序遍历比较即可：
+
+* java
+
+```java
+if( s.charAt(i) == p.charAt(i) )
+```
+
+如果正则表达式字符串p只有一种"."一种特殊标记，依然是按序遍历比较即可 ：
+
+* java
+
+```java
+if( s.charAt(i) == p.charAt(i) || p.charAt(i) == '.' )
+```
+
+上述两种情况实现时还需要判断字符串长度和字符串判空的操作。
+
+但是，"\*"这个特殊字符需要特殊处理，`当p的第i个元素的下一个元素是星号` 时会有两种情况：
+
+1. i元素需要出现0次，`我们就保持s不变，将p的减掉两个元素，调用isMatch`。例如s：bc、p：a*bc，我们就保持s不变，减掉p的"a\*"，调用isMatch(s:bc,p:bc)。
+2. i元素需要出现一次或更多次，`先比较i元素和s首元素，相等则保持p不变，s减掉首元素，调用isMatch。`例如s：aabb、p：a*bb，就保持p不变，减掉s的首元素，调用isMatch(s:abb,p:a\*bb)。
+
+此时存在一些需要思考的情况，例如s：abb、p：a\*abb，会用两种方式处理：
+
+1. 按照上述第二种情况比较i元素和s首元素，发现相等就会减掉s的首字符，调用isMatch(s:bb,p:a\*abb)。在按照上述第一种情况减去p的两个元素，调用isMatch(s:bb,p:abb)，最终导致false。
+2. 直接按照上述第一种情况减去p的两个元素，调用isMatch(s:abb,p:abb)，最终导致true。
+
+所以说这算是一种暴力方法，会将所有的情况走一边，看看是否存在可以匹配的情况。
+
+* java
+
+```java
+public boolean isMatch(String s, String p) {
+    //如果正则串p为空字符串s也为空这匹配成功，如果正则串p为空但是s不是空则说明匹配失败
+    if (p.isEmpty())return s.isEmpty();
+    //判断s和p的首字符是否匹配，注意要先判断s不为空
+    boolean headMatched=!s.isEmpty()&&(s.charAt(0)==p.charAt(0)||p.charAt(0)=='.');
+    if (p.length()>=2&&p.charAt(1)=='*'){//如果p的第一个元素的下一个元素是*
+        //则分别对两种情况进行判断
+        return isMatch(s,p.substring(2))||
+            (headMatched&&isMatch(s.substring(1),p));
+    }else if (headMatched){//否则，如果s和p的首字符相等
+        return isMatch(s.substring(1),p.substring(1));
+    }else {
+        return false;
+    }
+}
+```
+
+时间复杂度：O((n+m)*2^(n+m/2)) n和m分别是s和p的长度
+
+## 思路二：动态规划法
+
+本题的dp数组的含义就是：dp[i\][j\]就是s的前i个元素是否可以被p的前j个元素所匹配。
+
+我们知道了dp数组的含义之后就知道了dp数组的几个细节：
+
+1. dp[0\][0\]一定是true，因为s为空且p也为空的时候一定是匹配的；dp[1\][0\]一定是false，因为s有一个字符但是p为空的时候一定是不匹配的。
+2. 这个boolean类型的dp数组的大小应该是dp[s.length+1\][p.length+1\]，因为我们不仅仅要分别取出s和p的所有元素，还要表示分别取s和p的0个元素时候(都为空)的情况。
+3. 当写到dp[s.length\][p.length\]的时候，我们就得到了最终s和p的匹配情况。
+4. dp[1\][0]~dp[s.length\][0]这一列都是false，因为s不为空但是p为空一定不能匹配。
+
+所以创建好dp数组之后，初始化dp[0\][0\]=true、dp[0\][1\]=false、dp[1\][0]~dp[s.length\][0]都是false。然后将第一行即dp[0\][2\]到dp[0\][p.length]的元素初始化。
+
+第一行初始化思路：如果不为空的p想要匹配上为空的s，因为此时p已经不为空，则需要p是"a\*"、"b\*"、"c\*"。。。这种形式的才能匹配上。
+
+然后填写数组的其余部分，这个过程中如果p.charAt(j)=='*\'依然是遵循上题中的两种情况；否则就判断两个字符串的i和j号字符是否相等，相等则分别减除当前字符继续判断，不相等则直接等于false。
+
+* java
+
+```java
+public boolean isMatch(String s, String p) {
+    //需要分别取出s和p为空的情况，所以dp数组大小+1
+    boolean[][] dp=new boolean[s.length()+1][p.length()+1];
+    //初始化dp[0][0]=true,dp[0][1]和dp[1][0]~dp[s.length][0]默认值为false所以不需要显式初始化
+    dp[0][0]=true;
+    //填写第一行dp[0][2]~dp[0][p.length]
+    for (int k=2;k<=p.length();k++){
+        //p字符串的第2个字符是否等于'*',此时j元素需要0个，所以s不变p减除两个字符
+        dp[0][k]=p.charAt(k-1)=='*'&&dp[0][k-2];
+    }
+    //填写dp数组剩余部分
+    for (int i=0;i<s.length();i++){
+        for (int j=0;j<p.length();j++){
+            //p第j个字符是否为*
+            if (p.charAt(j)=='*'){
+                //两种情况:1.s不变[i+1],p移除两个元素[j+1-2]。
+                // 2.比较s的i元素和p的j-1(因为此时j元素为*)元素,相等则移除首元素[i+1-1],p不变。
+                dp[i+1][j+1]=dp[i+1][j-1]||
+                    (dp[i][j+1]&&headMatched(s,p,i,j-1));
+            }else {
+                //s的i元素和p的j元素是否相等,相等则移除s的i元素[i+1-1]和p的j元素[j+1-1]
+                dp[i+1][j+1]=dp[i][j]&&headMatched(s,p,i,j);
+            }
+        }
+    }
+    return dp[s.length()][p.length()];
+}
+//判断s第i个字符和p第j个字符是否匹配
+public boolean headMatched(String s,String p,int i,int j){
+    return s.charAt(i)==p.charAt(j)||p.charAt(j)=='.';
+}
+```
+
+时间复杂度：O(n*m) n和m分别是s和p的长度
+
+有了第一题总结的"经验"之后，这道题逻辑上不难理解，但是细节上尤其各种下标值非常的恶心。
+
+---
+
+本人菜鸟，有错误请告知，感激不尽！
+
+更多题解源码和学习笔记：[github](https://github.com/Jerrymouse1998/learning-record-of-leetcode) 、[CSDN](https://blog.csdn.net/qq_42758551) 、[M1ng](http://www.m1ng.top/)

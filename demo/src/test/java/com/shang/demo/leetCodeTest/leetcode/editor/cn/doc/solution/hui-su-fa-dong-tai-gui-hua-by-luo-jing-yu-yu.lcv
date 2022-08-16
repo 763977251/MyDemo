@@ -1,0 +1,125 @@
+### 解题思路
+
+    /*
+     * 方法1 回溯法
+     * . 匹配单个任意字符，
+     * * 匹配前一个字符的任意0个或多个，
+     * 模式p中不带*时，字符串s与模式p直接比较就行，
+     * 如果模式p带*，它会出现在一个字符的后面，
+     * 如果p的第2个字符是*，有两种可能，
+     * *匹配前一个字符0个或者*匹配前一个字符多个，
+     * 匹配0个时，s回溯与p从第三个字符开始下一轮比较，
+     * 匹配多个时，在满足s和p第1个字符配对的情况下,
+     * s从第2个字符开始与p重新一轮匹配，
+     * 如果p第2字符不是*，在满足s和p第1个字符配对的情况下,
+     * 等于是普通匹配，继续下一轮匹配即可。
+     * */
+
+### 代码
+
+* cpp
+
+```cpp
+bool isMatch(std::string s, std::string p) {
+    if (p.empty()) {
+        return s.empty();
+    }
+
+    // p,s第一个字符是否匹配，相等或为 '.'
+    bool first_match = (!s.empty() && (p[0] == s[0] || p[0] == '.'));
+
+    // 从p的第2个字符开始，如果为 '*'
+    if (p.size() >= 2 && p[1] == '*') {
+        // 考虑 '*' 表示前面字符0次和多次的情况
+        // 0次：s回溯与p第3个字符继续下一轮匹配
+        // 多次 : 第1个字符匹配，从s第2个字符与p继续下一轮匹配
+        return (isMatch(s, p.substr(2)) || (first_match && isMatch(s.substr(1), p)));
+    } else {
+        //未匹配到 '*'，继续普通匹配
+        return first_match && isMatch(s.substr(1), p.substr(1));
+    }
+}
+```
+
+### 解题思路
+
+参考大佬的解析[动态规划 - 从 0 讲解，大白话好理解](https://leetcode-cn.com/problems/regular-expression-matching/solution/dong-tai-gui-hua-zen-yao-cong-0kai-shi-si-kao-da-b/)，学到了很多，感谢～
+
+    /*
+     * 方法2 动态规划
+     * 状态：dp[i][j] 表示s的前i个是否能被p的前j个匹配
+     * 转移方程：要求dp[i][j]的状态，可以从已知的dp[i-1][j-1]的状态，
+     * 再加上s[i]，p[j]来判断。
+     * 分3种情况考虑：
+     * 1. p[j] == s[i] : dp[i][j] = dp[i-1][j-1]
+     * 2. p[j] == '.' : dp[i][j] dp[i-1][j-1]
+     * 3. p[j] = '*' : 分2种情况分析——
+     *    1> p[i-1] != s[i] : dp[i][j] = dp[i][j-2]
+     *    *前的字符与s的第i个字符不匹配，比如(ab, abc*),
+     *    s[i]=ab与p[j-2]=ab是匹配的，此时c*可以匹配0个
+     *    WARBing: (ab, abc**)=false，因为 (ab, a*)=false
+     *    2> p[j-1] == s[i] || p[j-1] == '.' ：
+     *    *前面的字符能匹配s[i]，或者*前面是 .
+     *    比如(##b, ###b*)，或者(##b, ###.*),
+     *    只要###匹配，后面一定匹配，所以要看b和b*前面的字符串是否匹配
+     *    1) 多个字符匹配情况 : dp[i][j] = dp[i-1][j]
+     *    2) 单个字符匹配情况 : dp[i][j] = dp[i][j-1]
+     *       (该情况可省略，多字符包括单字符)
+     *    3) 没有字符匹配情况 : dp[i][j] = dp[i][j-2]
+     *
+     * 总结：
+     * 1. 如果 p[j] == s[i] : dp[i][j] = dp[i-1][j-1]
+     * 2. 如果 p[j] == '.' : dp[i][j] = dp[i-1][j-1]
+     * 3. 如果 p[j] == '*' :
+     *   1> 如果 p[j-1] != s[i] : dp[i][j] = dp[i][j-2]
+     *   2> 如果 p[j-1] == s[i] || p[j-1] == '.':
+     *     1) dp[i][j] = dp[i-1][j]
+     *     2) dp[i][j] = dp[i][j-2]
+     * */
+
+### 代码
+
+* cpp
+
+```cpp
+bool isMatch2(std::string s, std::string p) {
+    if (p.empty()) {
+        return s.empty();
+    }
+
+    // 前面加某一相同字符，
+    // 防止 (ab, c*ab) 这样的匹配，
+    // 避免复杂的初始化操作
+    s = " " + s;
+    p = " " + p;
+    int m = s.size(), n = p.size();
+
+    // 定义记忆数组，并初始化为false
+    std::vector<std::vector<bool>> dp(m + 1, std::vector<bool>(n + 1, false));
+
+    // 设添加的字符为真
+    dp[0][0] = true;
+
+    // 记忆数组能保持字符串上一个字符的状态
+    // 因此可以对下一个字符进行判断
+    for (int i = 1; i < m + 1; i++) {
+        for (int j = 1; j < n + 1; j++) {
+            // 不带 '*' 号时的匹配
+            if (s[i - 1] == p[j - 1] || p[j - 1] == '.') {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else if (p[j - 1] == '*') {
+                // 考虑 '*' 时的两种情况
+                if (s[i - 1] != p[j - 2] && p[j - 2] != '.') {
+                    dp[i][j] = dp[i][j - 2];
+                } else {
+                    dp[i][j] = dp[i][j - 2] || dp[i - 1][j];
+                }
+            }
+        }
+    }
+
+    // 返回最后字符的匹配状态
+    return dp[m][n];
+}
+```
+

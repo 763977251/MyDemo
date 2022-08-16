@@ -1,0 +1,18 @@
+**解释：**
+取10的n次方，从1开始遍历
+
+* []
+
+```java
+class Solution {
+    public int[] printNumbers(int n) {
+        int num = (int)Math.pow(10, n); // 取10的n次方
+        int[] ans = new int[num - 1]; 
+        for(int i = 0; i < num - 1; i++) {
+            ans[i] = i + 1;
+        }
+        return ans;
+    }
+}
+```
+

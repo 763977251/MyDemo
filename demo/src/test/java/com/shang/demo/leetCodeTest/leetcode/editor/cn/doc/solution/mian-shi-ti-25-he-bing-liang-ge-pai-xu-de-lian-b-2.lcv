@@ -1,0 +1,70 @@
+#### 解题思路：
+
+- 根据题目描述， 链表 $l_1$ , $l_2$ 是 **递增** 的，因此容易想到使用双指针 $l_1$ 和 $l_2$ 遍历两链表，根据 $l_1.val$ 和 $l_2.val$ 的大小关系确定节点添加顺序，两节点指针交替前进，直至遍历完毕。
+
+- **引入伪头节点：** 由于初始状态合并链表中无节点，因此循环第一轮时无法将节点添加到合并链表中。解决方案：初始化一个辅助节点 $dum$ 作为合并链表的伪头节点，将各节点添加至 $dum$ 之后。
+
+![Picture17.png](https://pic.leetcode-cn.com/550cc70957ea76ec0c04dfe4b5623a216b5fdfc7917c800a600b46da0a6aee50-Picture17.png)
+
+##### 算法流程：
+
+1. **初始化：** 伪头节点 $dum$ ，节点 $cur$ 指向 $dum$ 。
+2. **循环合并：** 当 $l_1$ 或 $l_2$ 为空时跳出；
+   1. 当 $l_1.val < l_2.val$ 时： $cur$ 的后继节点指定为 $l_1$ ，并 $l_1$ 向前走一步；
+   2. 当 $l_1.val \geq l_2.val$ 时： $cur$ 的后继节点指定为 $l_2$ ，并 $l_2$ 向前走一步 ；
+   3. 节点 $cur$ 向前走一步，即 $cur = cur.next$ 。
+3. **合并剩余尾部：** 跳出时有两种情况，即 $l_1$ 为空 **或** $l_2$ 为空。
+   1. 若 $l_1 \ne null$ ： 将 $l_1$ 添加至节点 $cur$ 之后；
+   2. 否则： 将 $l_2$ 添加至节点 $cur$ 之后。
+4. **返回值：** 合并链表在伪头节点 $dum$ 之后，因此返回 $dum.next$ 即可。
+
+<![Picture1.png](https://pic.leetcode-cn.com/61d5bf0954a4356fa15ad65c3e53daf4cf9ad2190ba7d69de930109626024c3f-Picture1.png),![Picture2.png](https://pic.leetcode-cn.com/fdac82aff201ed70bcbc69d5dcb4900a4034b400a9235d5fc85b74f1831d6603-Picture2.png),![Picture3.png](https://pic.leetcode-cn.com/38fa36d5ae325a0f27ee54e50483d5db74455bbf2ea5bc0c241b428d4a6b47c1-Picture3.png),![Picture4.png](https://pic.leetcode-cn.com/88ea6a5ecc6e86d0c1b1e334f764476385ccaecaf1cb18db38be3b47cedda965-Picture4.png),![Picture5.png](https://pic.leetcode-cn.com/a5b0dffdd884e728641298dc67e290ec86ffe574f695c2500a082ebfdfc81232-Picture5.png),![Picture6.png](https://pic.leetcode-cn.com/915d84061f5374542070720fb667772ed45d80eeb7a25d6ac9b6baf519a547a9-Picture6.png),![Picture7.png](https://pic.leetcode-cn.com/a9addb9094f17472d730b737811991c29d4fbca9e5824f7ad693d23d939677e5-Picture7.png),![Picture8.png](https://pic.leetcode-cn.com/45a3136242850ee9dc91dc1dfa7b1b2e3e4180e53e1daeb98d1bd6320690fc61-Picture8.png),![Picture9.png](https://pic.leetcode-cn.com/2f27d63af129a33f4ba5d42eb30c9991bc575c2290662af1fd28dfc1cbbb2cbb-Picture9.png),![Picture10.png](https://pic.leetcode-cn.com/00d8615a80212a84abb06cdb98828ebf025de9660e50924e07bb0bf59b65628f-Picture10.png),![Picture11.png](https://pic.leetcode-cn.com/5bd6902aaf9a3692482aaa4a9ac05c9ff8ca7db5ab6f2a84d7836e3ff9475726-Picture11.png),![Picture12.png](https://pic.leetcode-cn.com/65f63a6d5d396f92a00c1b1f88aade4f9068c1f0d182ce770c9adadd85e8bc07-Picture12.png),![Picture13.png](https://pic.leetcode-cn.com/4c200a2f801cc41a17925eb4d233d96466e7180c0cca65f6926fba12bdf71632-Picture13.png),![Picture14.png](https://pic.leetcode-cn.com/f8d4ee42e0ccb019745b1d0e73f21fbfd5989a0d5a56cdd7c9e9a97823545abe-Picture14.png),![Picture15.png](https://pic.leetcode-cn.com/426542cd8bbfe6ce716fab949a25e483daaef1950d691918509c05b6fbfd252c-Picture15.png),![Picture16.png](https://pic.leetcode-cn.com/6c7cf70eaea387f578622eb666984ba3b9cd451451c51326d1378ac234c09789-Picture16.png)>
+
+##### 复杂度分析：
+
+- **时间复杂度 $O(M+N)$ ：** $M, N$ 分别为链表 $l_1$, $l_2$ 的长度，合并操作需遍历两链表。
+- **空间复杂度 $O(1)$ ：** 节点引用 $dum$ , $cur$ 使用常数大小的额外空间。
+
+#### 代码：
+
+> Python 三元表达式写法 `A if x else B` ，代表当 $x = True$ 时执行 $A$ ，否则执行 $B$ 。
+
+* []
+
+```python
+class Solution:
+    def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+        cur = dum = ListNode(0)
+        while l1 and l2:
+            if l1.val < l2.val:
+                cur.next, l1 = l1, l1.next
+            else:
+                cur.next, l2 = l2, l2.next
+            cur = cur.next
+        cur.next = l1 if l1 else l2
+        return dum.next
+```
+
+* []
+
+```java
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode dum = new ListNode(0), cur = dum;
+        while(l1 != null && l2 != null) {
+            if(l1.val < l2.val) {
+                cur.next = l1;
+                l1 = l1.next;
+            }
+            else {
+                cur.next = l2;
+                l2 = l2.next;
+            }
+            cur = cur.next;
+        }
+        cur.next = l1 != null ? l1 : l2;
+        return dum.next;
+    }
+}
+```
+

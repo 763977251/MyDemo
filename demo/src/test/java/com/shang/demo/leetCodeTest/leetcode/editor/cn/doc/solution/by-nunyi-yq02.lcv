@@ -1,0 +1,45 @@
+思路：使用`dp[i][j]`来表示s[i] 和 p[i] 是否匹配。
+
+![正则表达式.png](https://pic.leetcode-cn.com/1649854742-mKUleU-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.png)
+
+分情况讨论：
+1. 当p[j] 是 `*`  时，由于 `*`可以使用零次或非零次，分情况讨论
+
+   1. 使用一次或以上，如情况一，当 i 与 j - 1相同时候，可以转移到 `dp[i - 1][j]`
+   2. 使用零次，如情况二，转移到  `dp[i][j - 2]`
+2. 当p[j] 是其他字母时候，如情况三，转移到  `dp[i - 1][j - 1]`
+
+在判断 i 和 j 相等时，使用 `(s[i] == p[j] || p[j] == '.')` 来判断
+
+* java
+
+```java
+class Solution {
+    public boolean isMatch(String s, String p) {
+        int m = s.length();
+        int n = p.length();
+        char[] s1 = s.toCharArray();
+        char[] s2 = p.toCharArray();
+
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+
+        for (int j = 2; j <= n; j++) {
+            dp[0][j] = dp[0][j - 2] & (s2[j - 1] == '*');
+        }
+
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s2[j - 1] != '*') {
+                    dp[i][j] = (s1[i - 1] == s2[j - 1] || s2[j - 1] == '.') & dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = (s1[i - 1] == s2[j - 2] || s2[j - 2] == '.') & dp[i - 1][j];
+                    dp[i][j] |= dp[i][j - 2];
+                }
+            }
+        }
+        return dp[m][n];
+    }
+}
+```
+

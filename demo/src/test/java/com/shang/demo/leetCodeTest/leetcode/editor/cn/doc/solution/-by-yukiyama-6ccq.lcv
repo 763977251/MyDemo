@@ -1,0 +1,82 @@
+# 剑指Offer1-20-表示数值的字符串
+
+[剑指 Offer 20. 表示数值的字符串](https://leetcode.cn/problems/biao-shi-shu-zhi-de-zi-fu-chuan-lcof/) (中等)
+
+<br />
+
+## 解法一：有限状态自动机
+
+### 算法描述
+
+典型的「有限状态自动机」问题，详见「官方题解」，这里给官方题解的图上的各个状态加上标号方便分析。
+
+※　[DFA](https://en.wikipedia.org/wiki/Deterministic_finite_automaton) 即 Deterministic Finite Automaton，确定有限自动机。
+
+| 状态 $id$ | 状态描述           | 可转移到的状态                                               |
+| --------- | ------------------ | ------------------------------------------------------------ |
+| $0$       | 开始空格           | $0,1,2,4$<br />( $8$ 不是，因为如果转移到 $8$ 的话，实际上是 $0$ ) |
+| $1$       | `e/E` 之前的 `+/-` | $2,4$                                                        |
+| $2$       | `.` 之前的数字     | $2,3,6,9$                                                    |
+| $3$       | 之前有数字时的 `.` | $5,6,9$                                                      |
+| $4$       | 之后有数字时的 `.` | $5$                                                          |
+| $5$       | `.` 之后的数字     | $5,6,9$                                                      |
+| $6$       | `e/E`              | $7,8$                                                        |
+| $7$       | `e/E `之后的 `+/-` | $8$                                                          |
+| $8$       | `e/E `之后的数字   | $8,9$                                                        |
+| $9$       | 结尾空格           | $9$                                                          |
+
+合法的终止状态为 $2,3,5,8,9$ 。在正确分析出所有状态和终止状态后，代码实现是简单的。
+
+![image.png](https://pic.leetcode-cn.com/1659338525-BCDuNA-image.png)
+
+<br />
+
+### 时空复杂度
+
+时间复杂度：$O(n)$ ，每一次转移只需要常数次操作。
+
+空间复杂度：$O(1)$ ，状态转移表与字符串大小无关，状态个数是有限的。
+
+<br />
+
+### 代码
+
+* java
+
+```java
+class Solution {
+    public boolean isNumber(String s) {
+        Map[] states = {
+            new HashMap<>(){{put(0,0); put(1,1); put(2,2); put(3,4);}}, // 0 > 0,1,2,4
+            new HashMap<>(){{put(2,2); put(3,4);}},                     // 1 > 2,4
+            new HashMap<>(){{put(2,2); put(3,3); put(4,6); put(0,9);}}, // 2 > 2,3,6,9
+            new HashMap<>(){{put(2,5); put(4,6); put(0,9);}},           // 3 > 5,6,9
+            new HashMap<>(){{put(2,5);}},                               // 4 > 5
+            new HashMap<>(){{put(2,5); put(4,6);put(0,9);}},            // 5 > 5,6,9
+            new HashMap<>(){{put(1,7); put(2,8);}},                     // 6 > 7,8
+            new HashMap<>(){{put(2,8);}},                               // 7 > 8
+            new HashMap<>(){{put(2,8); put(0,9);}},                     // 8 > 8,9
+            new HashMap<>(){{put(0,9);}},                               // 9 > 9
+        };
+        char[] chs = s.toCharArray();
+        int stateId = 0; // 初始状态视为 0 ，即「开始空格」
+        for(char c : chs){
+            int typeId = type(c);
+            if(!states[stateId].containsKey(typeId)) return false; // 无状态对应的类型
+            stateId = (int) states[stateId].get(typeId); // 状态转移
+        }
+        return stateId == 2 || stateId == 3 || stateId == 5 || stateId == 8 || stateId == 9;
+    }
+    private int type(char c){
+        if(c == ' ') return 0;                          // 0: ' '
+        else if(c == '+' || c == '-') return 1;         // 1: '+/-'
+        else if(c - '0' >= 0 && c - '0' <= 9) return 2; // 2: digit 
+        else if(c == '.') return 3;                     // 3: '.'
+        else if(c == 'e' || c == 'E') return 4;         // 4: 'e/E';
+        else return -1;                                 // 5: 非法字符
+    }
+}
+```
+
+<br />
+

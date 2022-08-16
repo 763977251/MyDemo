@@ -40,17 +40,33 @@ package com.shang.demo.leetCodeTest.leetcode.editor.cn;
 
 
 //leetcode submit region begin(Prohibit modification and deletion)
-class Solution1 {
+class Solution剑指Offer16 {
     public double myPow(double x, int n) {
-        if (n == 0){
-            return 1L;
+        //将正数n和负数n都给转换为正数n
+        // 注意：Java 代码中 int32 变量n∈[−2147483648,2147483647]
+        // 因此当 n = -2147483648 时执行 n = -n 会因越界而赋值出错
+        // 我们此处一开始就把 n 用 long 存储
+        long b = n;
+        if (n<0){
+            b = -b;
+            x = 1/x;
         }
-        double res = 1L;
-        for (int i = 0; i < Math.abs(n); i++) {
-            res *=x;
-        }
-        if (n <0){
-            return 1L/res;
+        return culc(x,b);
+    }
+
+    //快速幂模版
+    // 递归的进行x的n次方计算
+    public double culc(double base, long power){
+        double res = 1.0;
+        while (power >0){
+            //两种情况会进入if语句：
+            // 1.幂次若为奇数，提前多乘一次x
+            // 2.当幂次除到1，把base赋值给res
+            if ((power & 1) == 1){
+                res *= base;
+            }
+            power = power >> 1;
+            base = base * base;
         }
         return res;
     }

@@ -1,0 +1,51 @@
+### 解题思路
+
+arr[i][j]表示s和p从后往前分别数i个j个匹配与否。
+初始化:首先两个空字符串匹配，故arr[0][0]=true;
+其次，若p的最后一个字符若为'*',则arr[0][2]=true;
+若均为*与字母交替，则均可以与空字符串匹配，故有了下文的初始化条件。
+动态规划：
+对于每一个arr[i][j],我们均先考虑j的后一个字符是否为*，即p.charAt(n-j+1).
+若为*，则这两个字符可以当作不起作用，故arr[i][j]=arr[i][j]||arr[i][j-2];
+若起作用，则需要比较i位置与j位置元素是否相同，或者j为'.',此时只需arr[i-1][j]为true，则arr[i][j]就为true.
+
+    若j的后一个字符不是*，就正常比较，ij元素是否相同，或者j为'.',此时arr[i][j]=arr[i-1][j-1].
+
+### 代码
+
+* java
+
+```java
+class Solution {
+    public boolean isMatch(String s, String p) {
+        int m=s.length(),n=p.length();
+        boolean[][] arr=new boolean[m+1][n+1];
+        //初始化
+        arr[0][0]=true;
+        for(int j=1;j<=n;j+=2){
+            if(p.charAt(n-j)=='*'){
+                arr[0][j+1]=true;
+            }else{
+                break;
+            }
+        }
+        //dp
+        for(int j=1;j<=n;j++){
+            char p1=p.charAt(n-j);
+            for(int i=1;i<=m;i++){
+                char s1=s.charAt(m-i);
+                if(n-j+1<n&&p.charAt(n-j+1)=='*'){
+                    arr[i][j]=arr[i][j-2];
+                    if(s1==p1||p1=='.')
+                        arr[i][j]=arr[i][j]||arr[i-1][j];
+                }else{
+                    if(s1==p1||p1=='.')
+                        arr[i][j]=arr[i-1][j-1];
+                }
+            }
+        }
+        return arr[m][n];
+    }
+}
+```
+

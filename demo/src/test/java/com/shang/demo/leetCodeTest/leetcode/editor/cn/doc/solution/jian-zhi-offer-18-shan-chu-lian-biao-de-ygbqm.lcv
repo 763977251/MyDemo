@@ -1,0 +1,35 @@
+### 解题思路
+
+记录当前结点和上一个结点，如果当前结点是题目要求删除的，则让上一个结点指向这一个结点的下一个位置
+
+### 代码
+
+* java
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode deleteNode(ListNode head, int val) {
+        ListNode cur = head,pre = new ListNode(0);
+        pre.next = cur;
+        head = pre;
+        while (cur != null){
+            if (cur.val == val){
+                pre.next = cur.next;
+                break;
+            }
+            cur = cur.next;
+            pre = pre.next;
+        }
+        return head.next;
+    }
+}
+```
+

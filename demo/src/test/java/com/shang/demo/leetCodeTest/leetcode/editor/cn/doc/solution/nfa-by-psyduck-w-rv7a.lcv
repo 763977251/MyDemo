@@ -1,0 +1,125 @@
+# 第一次靠一己之力完成了困难题
+
+![image.png](https://pic.leetcode-cn.com/1611839448-BpGTIb-image.png)
+虽然效率一般，但还是很开心！！
+#NFA（不确定自动机）
+以前学的自动机知识有点忘记了，凭记忆画自动机。
+我的方法是，逐个读入模式中的字符，没读入一个字符就创建一个新状态，并指向这个新状态，如果入读的是*，就指向自己不创建新状态。
+比如ab\*ac\*a
+![image.png](https://pic.leetcode-cn.com/1611840754-danVwQ-image.png)
+（开始状态是-1）
+这里需要注意的是，*表示字符可以出现任意次（含0次），所以当遍历到*后面的字符并创建完新状态，不要忘记，指向（停顿）指向这个新状态的状态也可以直接指向这个新状态。结束状态也是一样的。
+
+* 
+
+```
+class State{
+    private int state;
+    public List<Character> conditions;
+    public List<State> states;
+    public boolean termination = false;
+    
+    public State(int state){
+        this.state = state;
+        this.conditions = new ArrayList<>();
+        this.states = new ArrayList<>();
+    }
+}
+```
+
+* 
+
+```
+public static void add(char conditon ,State state,State current) {
+    	current.states.add(state);
+    	current.conditions.add(conditon);
+    }
+```
+
+* 
+
+```
+public static State nfa(String p) {
+    	int k = -1;
+    	List<State> states = new ArrayList<>();
+        State current = new State(k);
+        states.add(current);
+        State head = current;
+        for(int i = 0 ; i < p.length() ; i++) {
+        	if(p.charAt(i) == '*') {
+        		add(p.charAt(i-1),current,current);
+        	}else {
+        		k++;
+        		State state = new State(k);
+        		states.add(state);
+        		add(p.charAt(i),state,current);
+        		if(i > 1) {
+                    //上面强调*后面的新状态
+        			char pre = p.charAt(i-1);
+            		State prestate = null;
+            		int m = 1;
+            		while(pre == '*') {
+            			prestate = states.get(states.size() - 2 - m);
+            			add(p.charAt(i),state,prestate);
+            			if(i - 1 - 2*m > 0)
+            				pre = p.charAt(i - 1 - 2*m);
+            			else
+            				break;
+            			m++;
+            		}
+        		}
+        		current = state;
+        	}
+        }
+        current.termination = true;
+        //上面强调的结束状态
+        char pre = p.charAt(p.length() -1);
+		State prestate = null;
+		int m = 1;
+		while(pre == '*') {
+			prestate = states.get(states.size() - m - 1);
+			prestate.termination = true;
+			if(p.length() - 1 - 2*m > 0)
+				pre = p.charAt(p.length() - 1 - 2*m);
+			else
+				break;
+			m++;
+		}
+        return head;
+    }
+```
+
+# 本题
+
+可以现根据模板得到nfa，然后深度遍历自动机，如果遍历到结束节点返回true，如果没有遍历到结束节点返回false。
+
+* 
+
+```
+public static boolean dfs(State k,String s) {
+    	if(k.termination && s.isEmpty())
+    		return true;
+    	else if(!s.isEmpty()) {
+    		for(int i = 0 ; i < k.conditions.size();i++) {
+            	if(k.conditions.get(i) == s.charAt(0) || k.conditions.get(i)== '.') {
+            		boolean result = dfs(k.states.get(i),s.substring(1));
+            		if(result)
+            			return result;
+            	}
+            }
+    		return false;
+    	}else {
+    		return false;
+    	}
+    }
+ public static boolean isMatch(String s, String p) {
+    	State k = nfa(p);
+        if(k ==null && s.isEmpty())
+            return true;
+        else if(k ==null)
+            return false;
+        else
+    	    return dfs(k,s);
+    }
+```
+

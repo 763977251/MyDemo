@@ -1,0 +1,40 @@
+### 解题思路
+
+使用双指针进行删除方法，首先有两种情况，一种是第一个就是要找的值，一种是第一个不是，第一种情况做单独处理，第二种使用遍历找到然后用双指针进行删除。
+
+### 代码
+
+* java
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode deleteNode(ListNode head, int val) {
+     ListNode h1=head;
+     ListNode h2=head.next;
+     if(head.val==val){
+         h1=head.next;
+         head=null;
+         return h1;
+     }
+     while(h2!=null){
+         if(h2.val==val){
+          h1.next=h2.next;
+         }
+         h1=h1.next;
+         h2=h2.next;
+         
+     }
+      return head;
+    }
+   
+}
+```
+

@@ -1,0 +1,55 @@
+### 解题思路
+
+某一时刻的状态由上一时刻得到，就可以考虑用动态规划，首先我们先构造一个二维的dp数组，i表示前i个字符串，j表示前j长度的正则表达式。
+dp数组的初始状态：
+1.i=0,j=0设定为符合题意
+2.当j=0,即正则表达式不存在，那dp[i][0](i!=0)都默认为false
+
+具体思路见实现代码
+有一个例子："aaa"  "a*a";
+其dp数组如下:
+![image.png](https://pic.leetcode-cn.com/1628772435-DhOsTR-image.png)
+
+### 代码
+
+* java
+
+```java
+class Solution {
+    public boolean isMatch(String s, String p) {
+        //利用动态规划数组dp,记录s前i位，与p前j位是否匹配
+        int m=s.length()+1;
+        int n=p.length()+1;
+
+        boolean[][] dp = new boolean[m][n];
+        dp[0][0]=true;
+
+        for(int i=0;i<m;i++){
+            for(int j=1;j<n;j++){
+                if(p.charAt(j-1)!='*'){
+                    if(i>0 &&(p.charAt(j-1)==s.charAt(i-1)||p.charAt(j-1)=='.')){
+                        dp[i][j]=dp[i-1][j-1];
+                        System.out.println("dp["+i+"]"+"["+j+"] = "+dp[i][j]);
+                    }
+                }else{//此时遍历的部分子串末尾位*
+                    //跳过*，*表示前面那个字符位0
+                    if(j>=2){
+                        dp[i][j]=dp[i][j-2];
+                        System.out.println("dp["+i+"]"+"["+j+"] = "+dp[i][j]);
+                    }
+                    //*表示前面那个字符位次>=1
+                    if((i>=1&&j>=2)&&(p.charAt(j-2)==s.charAt(i-1)||p.charAt(j-2)=='.')){
+                        //正则表达式不动，字符串后移：表示当前匹配成功
+                        //|=表示前面跳过不看*，匹配成功，但这一步没有匹配成功也算匹配成功，如abc,abcc*,在上一步dp[3][5]=dp[3][3]=true,而这一步dp[3][5]=dp[2][5]=false
+                        dp[i][j] |= dp[i-1][j];
+                        System.out.println("dp["+i+"]"+"["+j+"] = "+dp[i][j]);
+                    }
+                }
+            }
+        }
+
+        return dp[m-1][n-1];
+    }
+}
+```
+

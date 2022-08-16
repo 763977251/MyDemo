@@ -1,0 +1,21 @@
+### 解题思路
+
+此处撰写解题思路
+
+### 代码
+
+* java
+
+```java
+class Solution {
+    public int[] printNumbers(int n) {
+        int m=(int)Math.pow(10,n);
+        int[] mm=new int[m-1];
+        for(int i=1;i<m;i++){
+            mm[i-1]=i;
+        }
+        return mm;
+    }
+}
+```
+

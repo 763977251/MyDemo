@@ -1,0 +1,113 @@
+## 方法一： 快速幂。 时间O(logn)
+
+**前置知识**
+
+`快速幂算法原理:`
+
+如需求数据 a 的幂次，此处 a 可以为数也可以为矩阵，常规做法需要对a进行不断的乘积即 a * a * a * ... 此处的时间复杂度将为 O(n)
+
+以求 3^10 的结果为例：
+
+[优化步骤1：]
+
+易知：
+
+* java
+
+~~~java
+3^10=3*3*3*3*3*3*3*3*3*3
+
+    =9^5 = 9^4*9
+
+    =81^2*9
+
+    =6561*9
+~~~
+
+基于以上原理，我们在计算一个数的多次幂时，可以先判断其幂次的奇偶性，然后：
+
+- 如果幂次为偶直接 base(底数) 作平方，power(幂次) 除以2
+
+- 如果幂次为奇则底数平方，幂次整除于2然后再多乘一次底数
+
+[优化步骤2：]
+
+对于以上涉及到 [判断奇偶性] 和 [除以2] 这样的操作。使用系统的位运算比普通运算的效率是高的，因此可以进一步优化：
+
+- 把 `power % 2 == 1` 变为 `(power & 1) == 1`
+
+- 把 ` power = power / 2` 变为 `power = power >> 1`
+
+`代码`
+
+* java
+
+```java
+class Solution {
+    public double myPow(double x, int n) {
+        //将正数n和负数n都给转换为正数n
+        //注意：Java 代码中 int32 变量n∈[−2147483648,2147483647]
+        //因此当 n = -2147483648 时执行 n = -n 会因越界而赋值出错
+        //我们此处一开始就把 n 用 long 存储
+        long b = n;
+
+        if (n < 0) {
+            b = -b;
+            x = 1 / x;
+        }
+        return culc(x, b);
+    }
+
+    //快速幂模版
+    //递归的进行x的n次方计算
+    public double culc(double base, long power) {
+        double res = 1.0;
+
+        while (power > 0) {
+            //两种情况会进入if语句：
+            //1.幂次若为奇数，提前多乘一次x
+            //2.当幂次除到1，把x赋值给res
+            if ((power & 1) == 1) {
+                res *= base;
+            }
+            //幂次除以2
+            power = power >> 1;
+            //底数平方
+            base = base * base;
+        }
+        return res;
+    }
+}
+```
+
+## 方法二：提供一个递归思路。 时间 O(logn)
+
+* java
+
+```java
+class Solution {
+    public double myPow(double x, int n) {
+        long b = n;
+        if (n < 0) {
+            b = -b;
+            x = 1 / x;
+        }
+        return culc(x, b);
+    }
+
+    public double culc(double base, long power) {
+        if (power == 0) {
+            return 1;
+        }
+
+        double t = culc(base, power >> 1);
+
+        if ((power & 1) == 1) {
+            return t * t * base;
+        }
+
+        return t * t;
+    }
+}
+```
+
