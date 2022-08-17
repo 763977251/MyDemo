@@ -35,7 +35,7 @@ package com.shang.demo.leetCodeTest.leetcode.editor.cn;//请完成一个函数�
  *     TreeNode(int x) { val = x; }
  * }
  */
-class Solution {
+class Solution剑指Offer27 {
     public TreeNode mirrorTree(TreeNode root) {
         if (root == null){
             return null;

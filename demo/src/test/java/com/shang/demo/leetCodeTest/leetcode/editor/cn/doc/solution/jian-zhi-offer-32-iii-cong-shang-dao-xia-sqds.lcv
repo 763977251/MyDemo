@@ -1,0 +1,73 @@
+**思路分析**
+- I. 按层打印： 题目要求的二叉树的 从上至下 打印（即按层打印），又称为二叉树的 广度优先搜索（BFS）。BFS 通常借助 队列 的先入先出特性来实现。
+- II. 每层打印到一行： 将本层全部节点打印到一行，并将下一层全部节点加入队列，以此类推，即可分为多行打印。
+- III. 每层打印到一行： 将本层全部节点打印到一行，并将下一层全部节点加入队列，以此类推，即可分为多行打印。但是需要一个计数的东西判断是奇数层还是偶数层，如果是偶数层就把这个数据拿出来放入栈里面在拿出来就是倒序了。
+
+**算法流程**
+- 特例处理： 当根节点为空，则返回空列表 [] ；
+- 初始化： 打印结果列表 res = [] ，包含根节点的队列 queue = [root] ；
+- BFS 循环： 当队列 queue 为空时跳出；
+  - 大小：计算队列的大小也就是当前根结点有多少孩子结点；
+  - 新建一个临时列表 tmp ，用于存储当前层打印结果；
+  - 当前层打印循环： 循环次数为当前层节点数（即队列 queue 长度）；
+    - 出队： 队首元素出队，记为 node；
+    - 打印： 将 node.val 添加至 tmp 尾部；
+    - 添加子节点： 若 node 的左（右）子节点不为空，则将左（右）子节点加入队列 queue ；
+  - 判断当前是奇数还是偶数层，需要借用栈将数据反向。然后再将反向的数据存储到res中；
+- 将当前层结果 tmp 添加入 res 。
+- 返回值： 返回打印结果列表 res 即可。
+
+* 
+
+```
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        /* 根据函数返回值定义存储结果的变量 */
+        vector<vector<int>> result;
+        /* 定义一个队列用于存储节点的数据 */
+        queue<TreeNode*> que;
+        /* 判空 */
+        if(root != NULL) que.push(root);
+
+        /* 定义一个变量 用于判断奇偶层 */
+        int count = 0;
+
+        /* 开始层序遍历 */
+        while(!que.empty()) {
+            /* 计算队列的大小也即有多少个孩子 */
+            int size = que.size();
+            /* 定义一个临时vector 存储每一层 */
+            vector<int> vec;
+            stack<int> st;
+            /* 层序遍历 */
+            for(int i = 0; i < size; i++) {
+                /* 获取第一个节点数据 */
+                TreeNode* node = que.front();
+                que.pop();
+
+                vec.push_back(node->val);
+                if(node->left != NULL) que.push(node->left);
+                if(node->right != NULL) que.push(node->right);
+            }
+            /* 奇数层因为需要反向所以想到栈 */
+            if(count%2 != 0) {
+                for(int i = 0; i < vec.size(); i++) {
+                    st.push(vec[i]);
+                }
+                vec.clear();
+                while(!st.empty()) {
+                    vec.push_back(st.top());
+                    st.pop();
+                }
+            }
+            /* 将一层的数据保存 */
+            result.push_back(vec);
+            /* 计数== 层数 */
+            count++;
+        }
+        return result;
+    }
+};
+```
+

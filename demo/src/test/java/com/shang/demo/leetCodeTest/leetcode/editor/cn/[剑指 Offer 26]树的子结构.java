@@ -49,10 +49,10 @@ class Solution剑指Offer26 {
     }
 }
 
-class TreeNode {
-    int val;
-    TreeNode left;
-    TreeNode right;
-    TreeNode(int x) { val = x; }
-}
+//class TreeNode {
+//    int val;
+//    TreeNode left;
+//    TreeNode right;
+//    TreeNode(int x) { val = x; }
+//}
 //leetcode submit region end(Prohibit modification and deletion)

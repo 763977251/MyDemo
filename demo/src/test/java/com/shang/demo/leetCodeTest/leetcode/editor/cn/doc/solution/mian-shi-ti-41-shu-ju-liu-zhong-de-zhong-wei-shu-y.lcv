@@ -1,0 +1,116 @@
+#### 解题思路：
+
+> 给定一长度为 $N$ 的无序数组，其中位数的计算方法：首先对数组执行排序（使用 $O(N \log N)$ 时间），然后返回中间元素即可（使用 $O(1)$ 时间）。
+
+针对本题，根据以上思路，可以将数据流保存在一个列表中，并在添加元素时 **保持数组有序** 。此方法的时间复杂度为 $O(N)$ ，其中包括： 查找元素插入位置 $O(\log N)$ （二分查找）、向数组某位置插入元素 $O(N)$ （插入位置之后的元素都需要向后移动一位）。
+
+> 借助 **堆** 可进一步优化时间复杂度。
+
+建立一个 **小顶堆** $A$ 和 **大顶堆** $B$ ，各保存列表的一半元素，且规定：
+- $A$ 保存 **较大** 的一半，长度为 $\frac{N}{2}$（ $N$ 为偶数）或 $\frac{N+1}{2}$（ $N$ 为奇数）；
+- $B$ 保存 **较小** 的一半，长度为 $\frac{N}{2}$（ $N$ 为偶数）或 $\frac{N-1}{2}$（ $N$ 为奇数）；
+
+随后，中位数可仅根据 $A, B$ 的堆顶元素计算得到。
+
+![Picture1.png](https://pic.leetcode-cn.com/25837f1b195e56de20587a4ed97d9571463aa611789e768914638902add351f4-Picture1.png)
+
+##### 算法流程：
+
+> 设元素总数为 $N = m + n$ ，其中 $m$ 和 $n$ 分别为 $A$ 和 $B$ 中的元素个数。
+
+**`addNum(num)` 函数：**
+
+1. 当 $m = n$（即 $N$ 为 **偶数**）：需向 $A$ 添加一个元素。实现方法：将新元素 $num$ 插入至 $B$ ，再将 $B$ 堆顶元素插入至 $A$ ；
+2. 当 $m \ne n$（即 $N$ 为 **奇数**）：需向 $B$ 添加一个元素。实现方法：将新元素 $num$ 插入至 $A$ ，再将 $A$ 堆顶元素插入至 $B$ ；
+
+> 假设插入数字 $num$ 遇到情况 `1.` 。由于 $num$ 可能属于 “较小的一半” （即属于 $B$ ），因此不能将 $nums$ 直接插入至 $A$ 。而应先将 $num$ 插入至 $B$ ，再将 $B$ 堆顶元素插入至 $A$ 。这样就可以始终保持 $A$ 保存较大一半、 $B$ 保存较小一半。
+
+**`findMedian()` 函数：**
+
+1. 当 $m = n$（ $N$ 为 **偶数**）：则中位数为 $($ $A$ 的堆顶元素 + $B$ 的堆顶元素 $)/2$。
+2. 当 $m \ne n$（ $N$ 为 **奇数**）：则中位数为 $A$ 的堆顶元素。
+
+<![Picture2.png](https://pic.leetcode-cn.com/5b4cb63f90f9c251db8618dff9b5069ecb0e645c391293fd94d0e7604ae15dca-Picture2.png),![Picture3.png](https://pic.leetcode-cn.com/d9715b3a6cae6d0f60813611625357e1c47c58a23f64741d7a60acb7c14855fc-Picture3.png),![Picture4.png](https://pic.leetcode-cn.com/2126c17a71dea7a623ebbaeed1ffbb1aad8bd6ab60e3e9a2d0e0d7dbf1724f98-Picture4.png),![Picture5.png](https://pic.leetcode-cn.com/c2adafcbbbdd55ac020d550bb5dd318213c64f618c934bd6d2f92ffc716fda92-Picture5.png),![Picture6.png](https://pic.leetcode-cn.com/f22e746386bc9a57aab0bd9c59eaa8272051d28287e88b9379844f7706c67749-Picture6.png),![Picture7.png](https://pic.leetcode-cn.com/c30881523513328ffca3284594c5c62053ca019191f1a18d4cb06ec9a508887c-Picture7.png),![Picture8.png](https://pic.leetcode-cn.com/0023c4dc2012a43233316442272d6157bc98337a711624e63a26ce9bcf4aba8a-Picture8.png),![Picture9.png](https://pic.leetcode-cn.com/ae8a595670ad9806718b33a2aec6696f2e66e05a638770c90bb87b182ace07b3-Picture9.png),![Picture10.png](https://pic.leetcode-cn.com/714ad718155f1ee69cf15977f9e6df76785b8a6d65b81437c68c6beee68d1b42-Picture10.png),![Picture11.png](https://pic.leetcode-cn.com/f5668310f0170aa83e4e9019ba7feab1d1863bea736b0ee902ae2f681468b932-Picture11.png),![Picture12.png](https://pic.leetcode-cn.com/c9b98c70ffefa63984b0edbf132f515e6bba6b4880c8b2a74525d0322ba612d8-Picture12.png),![Picture13.png](https://pic.leetcode-cn.com/1fc7ec5dbb0c03fff3a5460025c860249443ff6c65f433de515811b346c90f48-Picture13.png),![Picture14.png](https://pic.leetcode-cn.com/ce778733fa007e49236596b7c34a1f8567df4a72cd35bc87cee40fc7beb43488-Picture14.png)>
+
+##### 复杂度分析：
+
+- **时间复杂度：**
+  - **查找中位数 $O(1)$ ：** 获取堆顶元素使用 $O(1)$ 时间；
+  - **添加数字 $O(\log N)$ ：** 堆的插入和弹出操作使用 $O(\log N)$ 时间。
+- **空间复杂度 $O(N)$ ：** 其中 $N$ 为数据流中的元素数量，小顶堆 $A$ 和大顶堆 $B$ 最多同时保存 $N$ 个元素。
+
+##### 代码：
+
+Python 中 heapq 模块是小顶堆。实现 **大顶堆** 方法： 小顶堆的插入和弹出操作均将元素 **取反** 即可。
+Java 使用 `PriorityQueue<>((x, y) -> (y - x))` 可方便实现大顶堆。
+
+* []
+
+```Python
+from heapq import *
+
+class MedianFinder:
+    def __init__(self):
+        self.A = [] # 小顶堆，保存较大的一半
+        self.B = [] # 大顶堆，保存较小的一半
+
+    def addNum(self, num: int) -> None:
+        if len(self.A) != len(self.B):
+            heappush(self.A, num)
+            heappush(self.B, -heappop(self.A))
+        else:
+            heappush(self.B, -num)
+            heappush(self.A, -heappop(self.B))
+
+    def findMedian(self) -> float:
+        return self.A[0] if len(self.A) != len(self.B) else (self.A[0] - self.B[0]) / 2.0
+```
+
+* []
+
+```Java
+class MedianFinder {
+    Queue<Integer> A, B;
+    public MedianFinder() {
+        A = new PriorityQueue<>(); // 小顶堆，保存较大的一半
+        B = new PriorityQueue<>((x, y) -> (y - x)); // 大顶堆，保存较小的一半
+    }
+    public void addNum(int num) {
+        if(A.size() != B.size()) {
+            A.add(num);
+            B.add(A.poll());
+        } else {
+            B.add(num);
+            A.add(B.poll());
+        }
+    }
+    public double findMedian() {
+        return A.size() != B.size() ? A.peek() : (A.peek() + B.peek()) / 2.0;
+    }
+}
+```
+
+> Push item on the heap, then pop and return the smallest item from the heap. The combined action runs more efficiently than heappush() followed by a separate call to heappop().
+
+根据以上文档说明，可将 Python 代码优化为：
+
+* []
+
+```Python
+from heapq import *
+
+class MedianFinder:
+    def __init__(self):
+        self.A = [] # 小顶堆，保存较大的一半
+        self.B = [] # 大顶堆，保存较小的一半
+
+    def addNum(self, num: int) -> None:
+        if len(self.A) != len(self.B):
+            heappush(self.B, -heappushpop(self.A, num))
+        else:
+            heappush(self.A, -heappushpop(self.B, -num))
+
+    def findMedian(self) -> float:
+        return self.A[0] if len(self.A) != len(self.B) else (self.A[0] - self.B[0]) / 2.0
+```
+

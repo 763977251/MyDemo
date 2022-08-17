@@ -1,0 +1,84 @@
+#### 解题思路：
+
+> 根据题目示例 `matrix = [[1,2,3],[4,5,6],[7,8,9]]` 的对应输出 `[1,2,3,6,9,8,7,4,5]` 可以发现，顺时针打印矩阵的顺序是 **“从左向右、从上向下、从右向左、从下向上”** 循环。
+
+- 因此，考虑设定矩阵的“左、上、右、下”四个边界，模拟以上矩阵遍历顺序。
+
+![Picture1.png](https://pic.leetcode-cn.com/c6de3a1bc0f38820941dbcff0e17a49204eba91b967d4ccc0d5485e68a4fcc95-Picture1.png)
+
+##### 算法流程：
+
+1. **空值处理：** 当 `matrix` 为空时，直接返回空列表 `[]` 即可。
+2. **初始化：** 矩阵 左、右、上、下 四个边界 `l` ,  `r` ,  `t` ,  `b` ，用于打印的结果列表 `res` 。
+3. **循环打印：** “从左向右、从上向下、从右向左、从下向上” 四个方向循环，每个方向打印中做以下三件事 *（各方向的具体信息见下表）* ；
+   1. 根据边界打印，即将元素按顺序添加至列表 `res` 尾部；
+   2. 边界向内收缩 $1$ （代表已被打印）；
+   3. 判断是否打印完毕（边界是否相遇），若打印完毕则跳出。
+4. **返回值：** 返回 `res` 即可。
+
+| 打印方向 | 1. 根据边界打印        | 2. 边界向内收缩   | 3. 是否打印完毕 |
+| -------- | ---------------------- | ----------------- | --------------- |
+| 从左向右 | 左边界`l` ，右边界 `r` | 上边界 `t` 加 $1$ | 是否 `t > b`    |
+| 从上向下 | 上边界 `t` ，下边界`b` | 右边界 `r` 减 $1$ | 是否 `l > r`    |
+| 从右向左 | 右边界 `r` ，左边界`l` | 下边界 `b` 减 $1$ | 是否 `t > b`    |
+| 从下向上 | 下边界 `b` ，上边界`t` | 左边界 `l` 加 $1$ | 是否 `l > r`    |
+
+##### 复杂度分析：
+
+- **时间复杂度 $O(MN)$ ：** $M, N$ 分别为矩阵行数和列数。
+- **空间复杂度 $O(1)$ ：** 四个边界 `l` ,  `r` ,  `t` ,  `b` 使用常数大小的 **额外** 空间（ `res` 为必须使用的空间）。
+
+<![Picture7.png](https://pic.leetcode-cn.com/4990446a88f72b7f03e6696bc6c718577d3190cf7559deb7d60af2c5857b2712-Picture7.png),![Picture2.png](https://pic.leetcode-cn.com/141da9868e0f4b45bb1d8a2ef8b55e2d1cb750b9d8f4f072db56e6f5aa269633-Picture2.png),![Picture3.png](https://pic.leetcode-cn.com/3d6fbb3b73ce3aa7899b7a7242a380efc481b4b5250132c91cc0e96e3c99d377-Picture3.png),![Picture4.png](https://pic.leetcode-cn.com/1f18872199acb988b1db4bacb69fc7b38c974c537750cc3c422152e58a3ee5f7-Picture4.png),![Picture5.png](https://pic.leetcode-cn.com/ad10b8cab62fdab0261302be2b75f4faceded16a278ddd85281687ab7a6be63e-Picture5.png),![Picture6.png](https://pic.leetcode-cn.com/f8cb8f27ce89678406f96f4c471f5aa7c69744899ffff03026c5f73c6806dfa7-Picture6.png)>
+
+#### 代码：
+
+> Java 代码利用了 `++` 操作的便利性，详情可见 [++i 和 i++ 的区别](https://www.jianshu.com/p/b62eac216499) ；
+> - `res[x++]` 等价于先给 `res[x]` 赋值，再给 `x` 自增 $1$ ；
+> - `++t > b` 等价于先给 `t` 自增 $1$ ，再判断 `t > b` 逻辑表达式。
+
+* []
+
+```python
+class Solution:
+    def spiralOrder(self, matrix:[[int]]) -> [int]:
+        if not matrix: return []
+        l, r, t, b, res = 0, len(matrix[0]) - 1, 0, len(matrix) - 1, []
+        while True:
+            for i in range(l, r + 1): res.append(matrix[t][i]) # left to right
+            t += 1
+            if t > b: break
+            for i in range(t, b + 1): res.append(matrix[i][r]) # top to bottom
+            r -= 1
+            if l > r: break
+            for i in range(r, l - 1, -1): res.append(matrix[b][i]) # right to left
+            b -= 1
+            if t > b: break
+            for i in range(b, t - 1, -1): res.append(matrix[i][l]) # bottom to top
+            l += 1
+            if l > r: break
+        return res
+```
+
+* []
+
+```java
+class Solution {
+    public int[] spiralOrder(int[][] matrix) {
+        if(matrix.length == 0) return new int[0];
+        int l = 0, r = matrix[0].length - 1, t = 0, b = matrix.length - 1, x = 0;
+        int[] res = new int[(r + 1) * (b + 1)];
+        while(true) {
+            for(int i = l; i <= r; i++) res[x++] = matrix[t][i]; // left to right.
+            if(++t > b) break;
+            for(int i = t; i <= b; i++) res[x++] = matrix[i][r]; // top to bottom.
+            if(l > --r) break;
+            for(int i = r; i >= l; i--) res[x++] = matrix[b][i]; // right to left.
+            if(t > --b) break;
+            for(int i = b; i >= t; i--) res[x++] = matrix[i][l]; // bottom to top.
+            if(++l > r) break;
+        }
+        return res;
+    }
+}
+```
+

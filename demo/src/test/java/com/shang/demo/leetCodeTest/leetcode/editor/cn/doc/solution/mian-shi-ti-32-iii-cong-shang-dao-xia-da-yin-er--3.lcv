@@ -1,0 +1,231 @@
+#### 解题思路：
+
+[面试题32 - I. 从上到下打印二叉树](https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-lcof/solution/mian-shi-ti-32-i-cong-shang-dao-xia-da-yin-er-ch-4/) 主要考察 **树的按层打印** ；
+[面试题32 - II. 从上到下打印二叉树 II](https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-ii-lcof/solution/mian-shi-ti-32-ii-cong-shang-dao-xia-da-yin-er-c-5/) 额外要求 **每一层打印到一行** ；
+本题额外要求 **打印顺序交替变化**（建议按顺序做此三道题）。
+
+![Picture1.png](https://pic.leetcode-cn.com/21a734ba515abad5a4c9ea04341b63100ad5ee7088e36e6cb67f83e29ad15044-Picture1.png)
+
+#### 方法一：层序遍历 + 双端队列
+
+- 利用双端队列的两端皆可添加元素的特性，设打印列表（双端队列） `tmp` ，并规定：
+  - 奇数层 则添加至 `tmp` **尾部** ，
+  - 偶数层 则添加至 `tmp` **头部** 。
+
+##### 算法流程：
+
+1. **特例处理：** 当树的根节点为空，则直接返回空列表 `[]` ；
+2. **初始化：** 打印结果空列表 `res` ，包含根节点的双端队列 `deque` ；
+3. **BFS 循环：** 当 `deque` 为空时跳出；
+   1. 新建列表 `tmp` ，用于临时存储当前层打印结果；
+   2. **当前层打印循环：** 循环次数为当前层节点数（即 `deque` 长度）；
+      1. **出队：** 队首元素出队，记为 `node`；
+      2. **打印：** 若为奇数层，将 `node.val` 添加至 `tmp` 尾部；否则，添加至 `tmp` 头部；
+      3. **添加子节点：** 若 `node` 的左（右）子节点不为空，则加入 `deque` ；
+   3. 将当前层结果 `tmp` 转化为 list 并添加入 `res` ；
+4. **返回值：** 返回打印结果列表 `res` 即可；
+
+<![Picture1.png](https://pic.leetcode-cn.com/bdd975d9e28a429b9abdd7ea0567b4220dd2267c9f0d3340de76e971dfe37d53-Picture1.png),![Picture2.png](https://pic.leetcode-cn.com/6532b9670fc269882a299eb605df5f04207324e5bbc589eb2856a903c9798f75-Picture2.png),![Picture3.png](https://pic.leetcode-cn.com/219fbfd0ae7609f237a04832715ae4cd34334691d654ba5c32e55fc839629d12-Picture3.png),![Picture4.png](https://pic.leetcode-cn.com/ba2c0ec06f6ae6fef4cf1b4d0ef9d418773036e94e8a1720ed9de9ad799dbe93-Picture4.png),![Picture5.png](https://pic.leetcode-cn.com/3d63c23dda39574fdb44a2a6cee3e1db2c183d24a6f46f71dc8259e9f26c1610-Picture5.png),![Picture6.png](https://pic.leetcode-cn.com/ba88cccc176b75c69b71821ea46453a753784874649d88fbae5aa8fcfda663f5-Picture6.png),![Picture7.png](https://pic.leetcode-cn.com/112802b125b378f716d96b673a8dca96ef26dba3ba1ad37a66c5f2a0368dd4bc-Picture7.png),![Picture8.png](https://pic.leetcode-cn.com/770ab249b1b3ffe62ad6b0082044b9f99cff9c7edfd6b6142263e879ebf01fa7-Picture8.png),![Picture9.png](https://pic.leetcode-cn.com/1991f79f67270dcdb6ad29c50b061de3d5bdd9ce2fbdac8f804f4ffc9a298c6e-Picture9.png),![Picture10.png](https://pic.leetcode-cn.com/3ce5c6ada2f5c0ff6baa12c298b31c45f0a6f78ed5da58088ead7704e3066e7f-Picture10.png)>
+
+##### 复杂度分析：
+
+- **时间复杂度 $O(N)$ ：** $N$ 为二叉树的节点数量，即 BFS 需循环 $N$ 次，占用 $O(N)$ ；双端队列的队首和队尾的添加和删除操作的时间复杂度均为 $O(1)$ 。
+- **空间复杂度 $O(N)$ ：** 最差情况下，即当树为满二叉树时，最多有 $N/2$ 个树节点 **同时** 在 `deque` 中，使用 $O(N)$ 大小的额外空间。
+
+##### 代码：
+
+> Python 中使用 collections 中的双端队列 `deque()` ，其 `popleft()` 方法可达到 $O(1)$ 时间复杂度；列表 list 的 `pop(0)` 方法时间复杂度为 $O(N)$ 。
+> Java 中将链表 LinkedList 作为双端队列使用。
+
+* []
+
+```python
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root: return []
+        res, deque = [], collections.deque([root])
+        while deque:
+            tmp = collections.deque()
+            for _ in range(len(deque)):
+                node = deque.popleft()
+                if len(res) % 2: tmp.appendleft(node.val) # 偶数层 -> 队列头部
+                else: tmp.append(node.val) # 奇数层 -> 队列尾部
+                if node.left: deque.append(node.left)
+                if node.right: deque.append(node.right)
+            res.append(list(tmp))
+        return res
+```
+
+* []
+
+```java
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        List<List<Integer>> res = new ArrayList<>();
+        if(root != null) queue.add(root);
+        while(!queue.isEmpty()) {
+            LinkedList<Integer> tmp = new LinkedList<>();
+            for(int i = queue.size(); i > 0; i--) {
+                TreeNode node = queue.poll();
+                if(res.size() % 2 == 0) tmp.addLast(node.val); // 偶数层 -> 队列头部
+                else tmp.addFirst(node.val); // 奇数层 -> 队列尾部
+                if(node.left != null) queue.add(node.left);
+                if(node.right != null) queue.add(node.right);
+            }
+            res.add(tmp);
+        }
+        return res;
+    }
+}
+```
+
+#### 方法二：层序遍历 + 双端队列（奇偶层逻辑分离）
+
+- 方法一代码简短、容易实现；但需要判断每个节点的所在层奇偶性，即冗余了 $N$ 次判断。
+- 通过将奇偶层逻辑拆分，可以消除冗余的判断。
+
+##### 算法流程：
+
+> 与方法一对比，仅 BFS 循环不同。
+
+- **BFS 循环：** 循环打印奇 / 偶数层，当 `deque` 为空时跳出；
+  1. **打印奇数层：** **从左向右** 打印，**先左后右** 加入下层节点；
+  2. 若 `deque` 为空，说明向下无偶数层，则跳出；
+  3. **打印偶数层：** **从右向左** 打印，**先右后左** 加入下层节点；
+
+##### 复杂度分析：
+
+- **时间复杂度 $O(N)$ ：** 同方法一。
+- **空间复杂度 $O(N)$ ：** 同方法一。
+
+##### 代码：
+
+* []
+
+```python
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root: return []
+        res, deque = [], collections.deque()
+        deque.append(root)
+        while deque:
+            tmp = []
+            # 打印奇数层
+            for _ in range(len(deque)):
+                # 从左向右打印
+                node = deque.popleft()
+                tmp.append(node.val)
+                # 先左后右加入下层节点
+                if node.left: deque.append(node.left)
+                if node.right: deque.append(node.right)
+            res.append(tmp)
+            if not deque: break # 若为空则提前跳出
+            # 打印偶数层
+            tmp = []
+            for _ in range(len(deque)):
+                # 从右向左打印
+                node = deque.pop()
+                tmp.append(node.val)
+                # 先右后左加入下层节点
+                if node.right: deque.appendleft(node.right)
+                if node.left: deque.appendleft(node.left)
+            res.append(tmp)
+        return res
+```
+
+* []
+
+```java
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        Deque<TreeNode> deque = new LinkedList<>();
+        List<List<Integer>> res = new ArrayList<>();
+        if(root != null) deque.add(root);
+        while(!deque.isEmpty()) {
+            // 打印奇数层
+            List<Integer> tmp = new ArrayList<>();
+            for(int i = deque.size(); i > 0; i--) {
+                // 从左向右打印
+                TreeNode node = deque.removeFirst();
+                tmp.add(node.val);
+                // 先左后右加入下层节点
+                if(node.left != null) deque.addLast(node.left);
+                if(node.right != null) deque.addLast(node.right);
+            }
+            res.add(tmp);
+            if(deque.isEmpty()) break; // 若为空则提前跳出
+            // 打印偶数层
+            tmp = new ArrayList<>();
+            for(int i = deque.size(); i > 0; i--) {
+                // 从右向左打印
+                TreeNode node = deque.removeLast();
+                tmp.add(node.val);
+                // 先右后左加入下层节点
+                if(node.right != null) deque.addFirst(node.right);
+                if(node.left != null) deque.addFirst(node.left);
+            }
+            res.add(tmp);
+        }
+        return res;
+    }
+}
+```
+
+#### 方法三：层序遍历 + 倒序
+
+- 此方法的优点是只用列表即可，无需其他数据结构。
+- **偶数层倒序：** 若 `res` 的长度为 **奇数** ，说明当前是偶数层，则对 `tmp` 执行 **倒序** 操作。
+
+##### 复杂度分析：
+
+- **时间复杂度 $O(N)$ ：** $N$ 为二叉树的节点数量，即 BFS 需循环 $N$ 次，占用 $O(N)$ 。**共完成** 少于 $N$ 个节点的倒序操作，占用 $O(N)$ 。
+- **空间复杂度 $O(N)$ ：** 最差情况下，即当树为满二叉树时，最多有 $N/2$ 个树节点**同时**在 `queue` 中，使用 $O(N)$ 大小的额外空间。
+
+<![Picture2.png](https://pic.leetcode-cn.com/07005c0e8fc08e1cf78c53e1978cfcfdadbdecd9158f72456c2ae5e74cacd75a-Picture2.png),![Picture3.png](https://pic.leetcode-cn.com/11ede89d80f1207552b1872ec036df960d23e8149a29a9b21754bc2bb618190b-Picture3.png),![Picture4.png](https://pic.leetcode-cn.com/f2f135ce05b23d0fee93c6cb021163909ca5ee38bdb5404c0deedce1339d2276-Picture4.png),![Picture5.png](https://pic.leetcode-cn.com/3752cb5dba8b8e91e6bcc35c454e48f31442bc4c6fab4e0128205a4aee837ac5-Picture5.png),![Picture6.png](https://pic.leetcode-cn.com/02fdb31059b9b7912c595050c2a61258840e23bdaef37805c4a57cd08870cda2-Picture6.png),![Picture7.png](https://pic.leetcode-cn.com/e0de16e30a7dcd9544f80558911ebe8a2cc5c69fa08df1c7fcc2f18e335bc4fc-Picture7.png),![Picture8.png](https://pic.leetcode-cn.com/2bdb2b32328b21a6a67c46cd35a38b7b841573148bcb3c12c27da4f407c70a00-Picture8.png),![Picture9.png](https://pic.leetcode-cn.com/c33f58e253f9b6b60d51c8f3ec5373c0f26321152715925a171bc432523a1dec-Picture9.png),![Picture10.png](https://pic.leetcode-cn.com/343341870c0ff98a2a5de9aaa9fd4737da2d56bc997dfc1a526fad9621de0c63-Picture10.png),![Picture11.png](https://pic.leetcode-cn.com/db6959a085089e51f0f810d29a8316dd3d48f18840a878a869f15c9547f0bc79-Picture11.png),![Picture12.png](https://pic.leetcode-cn.com/edaf07634f084d6bfe4545fa2bbe03f98236c3ce47d91c6d13e3bd0ff8855148-Picture12.png)>
+
+##### 代码：
+
+* []
+
+```python
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root: return []
+        res, queue = [], collections.deque()
+        queue.append(root)
+        while queue:
+            tmp = []
+            for _ in range(len(queue)):
+                node = queue.popleft()
+                tmp.append(node.val)
+                if node.left: queue.append(node.left)
+                if node.right: queue.append(node.right)
+            res.append(tmp[::-1] if len(res) % 2 else tmp)
+        return res
+```
+
+* []
+
+```java
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        List<List<Integer>> res = new ArrayList<>();
+        if(root != null) queue.add(root);
+        while(!queue.isEmpty()) {
+            List<Integer> tmp = new ArrayList<>();
+            for(int i = queue.size(); i > 0; i--) {
+                TreeNode node = queue.poll();
+                tmp.add(node.val);
+                if(node.left != null) queue.add(node.left);
+                if(node.right != null) queue.add(node.right);
+            }
+            if(res.size() % 2 == 1) Collections.reverse(tmp);
+            res.add(tmp);
+        }
+        return res;
+    }
+}
+```
+

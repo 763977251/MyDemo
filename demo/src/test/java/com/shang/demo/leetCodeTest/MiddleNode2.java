@@ -2,7 +2,7 @@ package com.shang.demo.leetCodeTest;
 
 import org.junit.jupiter.api.Test;
 
-public class MiddleNode {
+public class MiddleNode2 {
 
     public ListNode middleNode(ListNode head) {
         ListNode slow = head;

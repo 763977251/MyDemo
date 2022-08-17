@@ -1,0 +1,86 @@
+#### 解题思路：
+
+> 普通栈的 `push()` 和 `pop()` 函数的复杂度为 $O(1)$ ；而获取栈最小值 `min()` 函数需要遍历整个栈，复杂度为 $O(N)$ 。
+
+- **本题难点：** 将 `min()` 函数复杂度降为 $O(1)$ ，可通过建立辅助栈实现；
+  - **数据栈 $A$ ：** 栈 $A$ 用于存储所有元素，保证入栈 `push()` 函数、出栈 `pop()` 函数、获取栈顶 `top()` 函数的正常逻辑。
+  - **辅助栈 $B$ ：** 栈 $B$ 中存储栈 $A$ 中所有 **非严格降序** 的元素，则栈 $A$ 中的最小元素始终对应栈 $B$ 的栈顶元素，即 `min()` 函数只需返回栈 $B$ 的栈顶元素即可。
+- 因此，只需设法维护好 栈 $B$ 的元素，使其保持非严格降序，即可实现 `min()` 函数的 $O(1)$ 复杂度。
+
+![Picture1.png](https://pic.leetcode-cn.com/f31f4b7f5e91d46ea610b6685c593e12bf798a9b8336b0560b6b520956dd5272-Picture1.png)
+
+##### 函数设计：
+
+- **`push(x)` 函数：** 重点为保持栈 $B$ 的元素是 **非严格降序** 的。
+
+  1. 将 $x$ 压入栈 $A$ （即 `A.add(x)` ）；
+  2. 若 ① 栈 $B$ 为空 **或** ② $x$ **小于等于** 栈 $B$ 的栈顶元素，则将 $x$ 压入栈 $B$ （即 `B.add(x)` ）。
+- **`pop()` 函数：** 重点为保持栈 $A, B$ 的 **元素一致性** 。
+
+  1. 执行栈 $A$ 出栈（即 `A.pop()` ），将出栈元素记为 $y$ ；
+  2. 若 $y$ 等于栈 $B$ 的栈顶元素，则执行栈 `B` 出栈（即 `B.pop()` ）。
+- **`top()` 函数：** 直接返回栈 $A$ 的栈顶元素即可，即返回 `A.peek()` 。
+
+- **`min()` 函数：** 直接返回栈 $B$ 的栈顶元素即可，即返回 `B.peek()` 。
+
+<![Picture2.png](https://pic.leetcode-cn.com/41e9e4ac4dda8074c67ca6071977cd7016b413013d61fbb38c624db8c90840ed-Picture2.png),![Picture3.png](https://pic.leetcode-cn.com/fc6dc02d58dbc40a6794288b4dd3bb8769a356b5889304a66b7383912ac34e47-Picture3.png),![Picture4.png](https://pic.leetcode-cn.com/578658d253f71da5014c783812182433660a97265259e6508c0b5f8779e339f1-Picture4.png),![Picture5.png](https://pic.leetcode-cn.com/b2ede6eeed03eebbfac3fe4e58aea21651f76834c1bfb7e78f72aab968b89b12-Picture5.png),![Picture6.png](https://pic.leetcode-cn.com/850feccffa1077aaa92db035f41687509a3ddc570b22e9f8176d954e122edea7-Picture6.png),![Picture7.png](https://pic.leetcode-cn.com/2c767991204cd4f48c48dcb35364649189250a3815b3d5b3c0e377ce0aa3a821-Picture7.png),![Picture8.png](https://pic.leetcode-cn.com/f2ea855b1fab8fe5bb8bfd72013c302bf1b348e0dd3c723ddb73ebef0db797f9-Picture8.png),![Picture9.png](https://pic.leetcode-cn.com/d9ac45ba9c4167a3307b232cbfd51d05094d69f0ce8ecbd138160dea2b4f1e32-Picture9.png),![Picture10.png](https://pic.leetcode-cn.com/5d88dcf59f5904e3a5a1b7b0a53f383e23265da8c9b3462267d90f063fe346e1-Picture10.png)>
+
+##### 复杂度分析：
+
+- **时间复杂度 $O(1)$ ：** `push()`, `pop()`, `top()`, `min()` 四个函数的时间复杂度均为常数级别。
+- **空间复杂度 $O(N)$ ：** 当共有 $N$ 个待入栈元素时，辅助栈 $B$ 最差情况下存储 $N$ 个元素，使用 $O(N)$ 额外空间。
+
+#### 代码：
+
+> Java 代码中，由于 Stack 中存储的是 `int` 的包装类 `Integer` ，因此需要使用 `equals()` 代替 `==` 来比较值是否相等。
+
+* []
+
+```python
+class MinStack:
+    def __init__(self):
+        self.A, self.B = [], []
+
+    def push(self, x: int) -> None:
+        self.A.append(x)
+        if not self.B or self.B[-1] >= x:
+            self.B.append(x)
+
+    def pop(self) -> None:
+        if self.A.pop() == self.B[-1]:
+            self.B.pop()
+
+    def top(self) -> int:
+        return self.A[-1]
+
+    def min(self) -> int:
+        return self.B[-1]
+```
+
+* []
+
+```java
+class MinStack {
+    Stack<Integer> A, B;
+    public MinStack() {
+        A = new Stack<>();
+        B = new Stack<>();
+    }
+    public void push(int x) {
+        A.add(x);
+        if(B.empty() || B.peek() >= x)
+            B.add(x);
+    }
+    public void pop() {
+        if(A.pop().equals(B.peek()))
+            B.pop();
+    }
+    public int top() {
+        return A.peek();
+    }
+    public int min() {
+        return B.peek();
+    }
+}
+```
+

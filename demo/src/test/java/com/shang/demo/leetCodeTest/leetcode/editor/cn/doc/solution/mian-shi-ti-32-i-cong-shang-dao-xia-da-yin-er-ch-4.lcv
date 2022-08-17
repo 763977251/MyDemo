@@ -1,0 +1,66 @@
+#### 解题思路：
+
+- 题目要求的二叉树的 **从上至下** 打印（即按层打印），又称为二叉树的 **广度优先搜索**（BFS）。
+- BFS 通常借助 **队列** 的先入先出特性来实现。
+
+![Picture0.png](https://pic.leetcode-cn.com/f824fdd8052ae4ee657365c98633480caf03c60e42e4661797618e318baf8664-Picture0.png)
+
+##### 算法流程：
+
+1. **特例处理：** 当树的根节点为空，则直接返回空列表 `[]` ；
+2. **初始化：** 打印结果列表 `res = []` ，包含根节点的队列 `queue = [root]` ；
+3. **BFS 循环：** 当队列 `queue` 为空时跳出；
+   1. **出队：** 队首元素出队，记为 `node`；
+   2. **打印：** 将 `node.val` 添加至列表 `tmp` 尾部；
+   3. **添加子节点：** 若 `node` 的左（右）子节点不为空，则将左（右）子节点加入队列 `queue` ；
+4. **返回值：** 返回打印结果列表 `res` 即可。
+
+<![Picture1.png](https://pic.leetcode-cn.com/81604b4d1970088e7ed58e2b2243735e441e64c3aa1f22a5d595ec4b4ad2c351-Picture1.png),![Picture2.png](https://pic.leetcode-cn.com/bf865a277b6ab6e3c2684b23e4b186305876fe38f8c2e7db2dd35b43ead41ab9-Picture2.png),![Picture3.png](https://pic.leetcode-cn.com/e282c67bd76355c77af24ecf9f4bc19190f5e024face86422cab17ef5de449b6-Picture3.png),![Picture4.png](https://pic.leetcode-cn.com/1d7590d312a484b9b47e532f4662be769585fe5eaba69f2f5faeed06027997a3-Picture4.png),![Picture5.png](https://pic.leetcode-cn.com/92136b0557c7fd88b314d089e6faf33f91abaaeb0ba1ca6b29ebd1b59656ce98-Picture5.png),![Picture6.png](https://pic.leetcode-cn.com/03a0fc894740a6ea79b48c8e3dca402661c650fd5c0c06e639bd27baca8517ff-Picture6.png),![Picture7.png](https://pic.leetcode-cn.com/9ab182cc66f6ca12c2b587106d3982b2114da24ec9569e7be3d0f0547f2e07b9-Picture7.png),![Picture8.png](https://pic.leetcode-cn.com/a3591e9682de1be4944802bb51d94ec0256217dc0741020c0f680470f788d32d-Picture8.png),![Picture9.png](https://pic.leetcode-cn.com/bc8d6229f7e22607fa624cf8cb06cd810850c21f1a682a52b29109908cbbe2bd-Picture9.png),![Picture10.png](https://pic.leetcode-cn.com/9aa6400bb899b4d3ac5412f1750c6bbfa0ade5d7a7dad73b119a2dd44541b121-Picture10.png),![Picture11.png](https://pic.leetcode-cn.com/cd3572f1cf8d859607e69706f513e69f7c93167fea781cd8801efd36cf962cca-Picture11.png),![Picture12.png](https://pic.leetcode-cn.com/afc24744e6e087232cadb11e0d521b740190e5f8e56a115cea6243059dc709df-Picture12.png),![Picture13.png](https://pic.leetcode-cn.com/df88918f467ebdbc7e84e766a1b7c28532ab0529ef37fdcbdd9a7075af1e5cdc-Picture13.png),![Picture14.png](https://pic.leetcode-cn.com/d4caeb99e97cb8468ab9c31b823faa6dc792fde9cc68c0d9ce3a6f10a9a3cc3d-Picture14.png),![Picture15.png](https://pic.leetcode-cn.com/27ac8470be8628c9848f6329a57fcda49510ef226a91354dcd5d063dcd56662d-Picture15.png),![Picture16.png](https://pic.leetcode-cn.com/0303d49a3b2eddfd68343fc507e84eed1a8f45b191794b067ba47f04527df353-Picture16.png),![Picture17.png](https://pic.leetcode-cn.com/c6ce654ff63d54592344cded38b0040a551c866e7662d71f6725148f265eb9cd-Picture17.png)>
+
+##### 复杂度分析：
+
+- **时间复杂度 $O(N)$ ：** $N$ 为二叉树的节点数量，即 BFS 需循环 $N$ 次。
+- **空间复杂度 $O(N)$ ：** 最差情况下，即当树为平衡二叉树时，最多有 $N/2$ 个树节点**同时**在 `queue` 中，使用 $O(N)$ 大小的额外空间。
+
+#### 代码：
+
+> Python 中使用 collections 中的双端队列 `deque()` ，其 `popleft()` 方法可达到 $O(1)$ 时间复杂度；列表 list 的 `pop(0)` 方法时间复杂度为 $O(N)$ 。
+
+* []
+
+```python
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[int]:
+        if not root: return []
+        res, queue = [], collections.deque()
+        queue.append(root)
+        while queue:
+            node = queue.popleft()
+            res.append(node.val)
+            if node.left: queue.append(node.left)
+            if node.right: queue.append(node.right)
+        return res
+```
+
+* []
+
+```java
+class Solution {
+    public int[] levelOrder(TreeNode root) {
+        if(root == null) return new int[0];
+        Queue<TreeNode> queue = new LinkedList<>(){{ add(root); }};
+        ArrayList<Integer> ans = new ArrayList<>();
+        while(!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            ans.add(node.val);
+            if(node.left != null) queue.add(node.left);
+            if(node.right != null) queue.add(node.right);
+        }
+        int[] res = new int[ans.size()];
+        for(int i = 0; i < ans.size(); i++)
+            res[i] = ans.get(i);
+        return res;
+    }
+}
+```
+
