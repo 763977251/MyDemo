@@ -1,0 +1,83 @@
+#### 解题思路：
+
+> 本问题是典型的二叉树方案搜索问题，使用回溯法解决，其包含 **先序遍历 + 路径记录** 两部分。
+
+- **先序遍历：** 按照 “根、左、右” 的顺序，遍历树的所有节点。
+- **路径记录：** 在先序遍历中，记录从根节点到当前节点的路径。当路径为 ① 根节点到叶节点形成的路径 **且** ② 各节点值的和等于目标值 `sum` 时，将此路径加入结果列表。
+
+![Picture1.png](https://pic.leetcode-cn.com/697ce69b1c2df33091587432fd86a4f51559c9a26afa79c415a963e3ec42c99d-Picture1.png)
+
+##### 算法流程：
+
+**`pathSum(root, sum)` 函数：**
+
+- **初始化：** 结果列表 `res` ，路径列表 `path` 。
+- **返回值：** 返回 `res` 即可。
+
+**`recur(root, tar) 函数：`**
+
+- **递推参数：** 当前节点 `root` ，当前目标值 `tar` 。
+- **终止条件：** 若节点 `root` 为空，则直接返回。
+- **递推工作：**
+  1. 路径更新： 将当前节点值 `root.val` 加入路径 `path` ；
+  2. 目标值更新： `tar = tar - root.val`（即目标值 `tar` 从 `sum` 减至 $0$ ）；
+  3. 路径记录： 当 ① `root` 为叶节点 **且** ② 路径和等于目标值 ，则将此路径 `path` 加入 `res` 。
+  4. 先序遍历： 递归左 / 右子节点。
+  5. 路径恢复： 向上回溯前，需要将当前节点从路径 `path` 中删除，即执行 `path.pop()` 。
+
+<![Picture2.png](https://pic.leetcode-cn.com/8c57845cc0ede2e86b53054bc9dd72f721281c61b8c7811bfcb5d9664f2a7381-Picture2.png),![Picture3.png](https://pic.leetcode-cn.com/d5b1679a37597259f748f03140629b7149a6d963516a286b9e7e707617223928-Picture3.png),![Picture4.png](https://pic.leetcode-cn.com/9b8434961f0d8b62d9892d89aee8753d597b9cebb2aa579b3987108b36da37be-Picture4.png),![Picture5.png](https://pic.leetcode-cn.com/1fc2893d3caae98686db46f1b8d3a053cffb5467c23c61d71acaf90cda810ad4-Picture5.png),![Picture6.png](https://pic.leetcode-cn.com/8133cfaacd6411bda92c7e0bd86ec14112df2a5a70236810dcc07ab5bee467af-Picture6.png),![Picture7.png](https://pic.leetcode-cn.com/a8b08a48f89943ff6f952bd2575adfd45e7f9b8f5dbbf4998f978e3918058879-Picture7.png),![Picture8.png](https://pic.leetcode-cn.com/00377adde93a2cca81eb7fcbfbb7f6bd4e0cbb07f460b91e4b7e160a9409ff0a-Picture8.png),![Picture9.png](https://pic.leetcode-cn.com/539fefcef4cd317eb790228ffdb96b7b327c6a51b43cb4d27bb92a124d554682-Picture9.png),![Picture10.png](https://pic.leetcode-cn.com/87b7b70da60026a5955d251ef18e161f13fe7202841ef98ac9c993216fb1b47f-Picture10.png),![Picture11.png](https://pic.leetcode-cn.com/7696435f9bda783c26964a80d6ca9807d120055e1d43ffcea3ddbdc3a826af4e-Picture11.png),![Picture12.png](https://pic.leetcode-cn.com/d726758a5c5fcc7984ecafffe3a0990bd3b83fdb43705ddbe4c06cc2aebcd151-Picture12.png),![Picture13.png](https://pic.leetcode-cn.com/ecf38be54b11f77185514d0c4c851ee73f198a8069d71e1211981d2e082c9f16-Picture13.png)>
+
+##### 复杂度分析：
+
+- **时间复杂度 $O(N)$ ：** $N$ 为二叉树的节点数，先序遍历需要遍历所有节点。
+- **空间复杂度 $O(N)$ ：** 最差情况下，即树退化为链表时，`path` 存储所有树节点，使用 $O(N)$ 额外空间。
+
+##### 代码：
+
+> 值得注意的是，记录路径时若直接执行 `res.append(path)` ，则是将 `path` 对象加入了 `res` ；后续 `path` 改变时， `res` 中的 `path` 对象也会随之改变。
+>
+> 正确做法：`res.append(list(path))` ，相当于复制了一个 `path` 并加入到 `res` 。
+
+* []
+
+```python
+class Solution:
+    def pathSum(self, root: TreeNode, sum: int) -> List[List[int]]:
+        res, path = [], []
+        def recur(root, tar):
+            if not root: return
+            path.append(root.val)
+            tar -= root.val
+            if tar == 0 and not root.left and not root.right:
+                res.append(list(path))
+            recur(root.left, tar)
+            recur(root.right, tar)
+            path.pop()
+
+        recur(root, sum)
+        return res
+```
+
+* []
+
+```java
+class Solution {
+    LinkedList<List<Integer>> res = new LinkedList<>();
+    LinkedList<Integer> path = new LinkedList<>(); 
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        recur(root, sum);
+        return res;
+    }
+    void recur(TreeNode root, int tar) {
+        if(root == null) return;
+        path.add(root.val);
+        tar -= root.val;
+        if(tar == 0 && root.left == null && root.right == null)
+            res.add(new LinkedList(path));
+        recur(root.left, tar);
+        recur(root.right, tar);
+        path.removeLast();
+    }
+}
+```
+
