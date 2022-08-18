@@ -1,0 +1,33 @@
+### 解题思路
+
+参考官解给出的不同写法
+
+### 代码
+
+* java
+
+```java
+class Solution {
+    public int countDigitOne(int n) {
+        long digit = 1;//注意要使用long，因为digit一直×10，会超过int范围，导致计算错误
+        int high = 0, low = 0;
+        int res = 0;
+        int count = n;//只是用来控制循环的次数
+        while(count != 0){
+            count /= 10;
+            low = (int)(n%(digit*10));//此时要转成int
+            high = (int)(n/(digit*10));
+            if(low >= 2*digit){
+                res += digit+high*digit;
+            }else if(low < digit){
+                res += 0+high*digit;
+            }else{
+                res += (low-digit+1)+high*digit;
+            }
+            digit *= 10;
+        }
+        return res;
+    }
+}
+```
+
