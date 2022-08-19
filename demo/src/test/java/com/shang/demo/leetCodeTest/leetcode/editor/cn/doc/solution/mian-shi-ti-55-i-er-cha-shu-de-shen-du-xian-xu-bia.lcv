@@ -1,0 +1,110 @@
+> 树的遍历方式总体分为两类：深度优先搜索（DFS）、广度优先搜索（BFS）；
+> - **常见的 DFS ：** 先序遍历、中序遍历、后序遍历；
+> - **常见的 BFS ：** 层序遍历（即按层遍历）。
+
+- 求树的深度需要遍历树的所有节点，本文将介绍基于 **后序遍历（DFS）** 和 **层序遍历（BFS）** 的两种解法。
+
+#### 方法一：后序遍历（DFS）
+
+- 树的后序遍历 / 深度优先搜索往往利用 **递归** 或 **栈** 实现，本文使用递归实现。
+- **关键点：** 此树的深度和其左（右）子树的深度之间的关系。显然，**此树的深度** 等于 **左子树的深度** 与 **右子树的深度** 中的 **最大值** $+1$ 。
+
+![Picture1.png](https://pic.leetcode-cn.com/9b063f1f2b7ba125b97a2a11c5f774c0f8ff4df594696993a8eb8282750dae0d-Picture1.png)
+
+##### 算法解析：
+
+1. **终止条件：** 当 `root​` 为空，说明已越过叶节点，因此返回 深度 $0$ 。
+2. **递推工作：** 本质上是对树做后序遍历。
+   1. 计算节点 `root​` 的 **左子树的深度** ，即调用 `maxDepth(root.left)`；
+   2. 计算节点 `root​` 的 **右子树的深度** ，即调用 `maxDepth(root.right)`；
+3. **返回值：** 返回 **此树的深度** ，即 `max(maxDepth(root.left), maxDepth(root.right)) + 1`。
+
+<![Picture2.png](https://pic.leetcode-cn.com/ca69f6f15b15999009e903a7c1284effc33ec2317f213ce9170a5d638e1d8b0c-Picture2.png),![Picture3.png](https://pic.leetcode-cn.com/8026850d70bbeb67a495d9d59eba48cdb43662208e27b430f866436db6fa6673-Picture3.png),![Picture4.png](https://pic.leetcode-cn.com/41c5379ebad1af9e846bbd5f3885968b5186f414e145b6468350ce2c70063f9c-Picture4.png),![Picture5.png](https://pic.leetcode-cn.com/15270a1bf3ce624fc2928a9bd76810221987abb940ff4c06d7c283be5e25c348-Picture5.png),![Picture6.png](https://pic.leetcode-cn.com/a27fbe2c4f711cfc1d3c0b7166ad370a1b0c1d7241eeec27d0581abf9722011d-Picture6.png),![Picture7.png](https://pic.leetcode-cn.com/acb83071a507b8c5b33a31cf0bf2469127df59dcf853c0f75cc299b26042f632-Picture7.png),![Picture8.png](https://pic.leetcode-cn.com/a10e134e2d20b51b7c444f3102464148c7758851452cf7cff2ef3df5666afbaf-Picture8.png),![Picture9.png](https://pic.leetcode-cn.com/65f9e2a001a58e4fba481a428a7f07011b6e9fead22909c0acb14fa6d88fc28c-Picture9.png),![Picture10.png](https://pic.leetcode-cn.com/770a9ba56e74def0292539aa6814785a81cbc2e4e6ef559427d23a91703d096e-Picture10.png),![Picture11.png](https://pic.leetcode-cn.com/7ecf07e4017438980ea0fe8145e71f33b41f6799c2b567ab0c16cfd25d037f02-Picture11.png)>
+
+##### 复杂度分析：
+
+- **时间复杂度 $O(N)$ ：** $N$ 为树的节点数量，计算树的深度需要遍历所有节点。
+- **空间复杂度 $O(N)$ ：** 最差情况下（当树退化为链表时），递归深度可达到 $N$ 。
+
+* []
+
+```python
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        if not root: return 0
+        return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
+```
+
+* []
+
+```java
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if(root == null) return 0;
+        return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+    }
+}
+```
+
+#### 方法二：层序遍历（BFS）
+
+- 树的层序遍历 / 广度优先搜索往往利用 **队列** 实现。
+- **关键点：** 每遍历一层，则计数器 $+1$ ，直到遍历完成，则可得到树的深度。
+
+##### 算法解析：
+
+1. **特例处理：** 当 `root​` 为空，直接返回 深度 $0$ 。
+2. **初始化：** 队列 `queue` （加入根节点  `root` ），计数器 `res = 0`。
+3. **循环遍历：** 当 `queue` 为空时跳出。
+   1. 初始化一个空列表 `tmp` ，用于临时存储下一层节点；
+   2. 遍历队列： 遍历 `queue` 中的各节点 `node` ，并将其左子节点和右子节点加入 `tmp`；
+   3. 更新队列： 执行 `queue = tmp` ，将下一层节点赋值给 `queue`；
+   4. 统计层数： 执行 `res += 1` ，代表层数加 $1$；
+4. **返回值：** 返回 `res` 即可。
+
+<![Picture12.png](https://pic.leetcode-cn.com/ae5820426ac175ef06324ed1dbd60a3598229c8ef2719316daf9f967116b7dea-Picture12.png),![Picture13.png](https://pic.leetcode-cn.com/429d28b860d5781712b1b249eb568f3f14aed3065f252a143affa4621045d79c-Picture13.png),![Picture14.png](https://pic.leetcode-cn.com/eb749560921844182f575d4f81c9b7cdb1ad14359a0612da81d7de5828bd804c-Picture14.png),![Picture15.png](https://pic.leetcode-cn.com/37740db43d97725688f2ddd70bfb76d2f7186069931db13e5b640b771e58a04e-Picture15.png),![Picture16.png](https://pic.leetcode-cn.com/ae07b1eb9ea9140ec0f2241698af6dedbf6fda871da2e3e43ac4271e5086e307-Picture16.png),![Picture17.png](https://pic.leetcode-cn.com/8d71069944763216d9f69410449034eacca8a74b0c0857274e1584763d8afa32-Picture17.png)>
+
+##### 复杂度分析：
+
+- **时间复杂度 $O(N)$ ：** $N$ 为树的节点数量，计算树的深度需要遍历所有节点。
+- **空间复杂度 $O(N)$ ：** 最差情况下（当树平衡时），队列 `queue` 同时存储 $N/2$ 个节点。
+
+* []
+
+```python
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        if not root: return 0
+        queue, res = [root], 0
+        while queue:
+            tmp = []
+            for node in queue:
+                if node.left: tmp.append(node.left)
+                if node.right: tmp.append(node.right)
+            queue = tmp
+            res += 1
+        return res
+```
+
+* []
+
+```java
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if(root == null) return 0;
+        List<TreeNode> queue = new LinkedList<>() {{ add(root); }}, tmp;
+        int res = 0;
+        while(!queue.isEmpty()) {
+            tmp = new LinkedList<>();
+            for(TreeNode node : queue) {
+                if(node.left != null) tmp.add(node.left);
+                if(node.right != null) tmp.add(node.right);
+            }
+            queue = tmp;
+            res++;
+        }
+        return res;
+    }
+}
+```
+
