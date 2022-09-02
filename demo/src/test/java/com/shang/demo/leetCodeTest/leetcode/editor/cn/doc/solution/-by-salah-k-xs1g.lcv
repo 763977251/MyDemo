@@ -1,0 +1,53 @@
+### 解题思路
+
+这题求的是全部的连续序列，是连续序列，那么我们就可以采用滑动窗口的思路，定义左右两边，然后移动，根据圈住的值的和来确定这个窗口是扩大还是缩小
+
+具体实现
+
+1. 定义 left，right 用来表示左右窗口
+2. 定义一个结果数组 ans，和一个临时的 sum 变量用来记录当前遍历的计算结果，这样不用重复计算，只需要通过一些简单的运算即可
+3. 由于是连续的，至少包含两个元素，那么我们遍历的终止条件应该为 left < MID，毕竟 100 = 50 + 50
+4. 然后开始我们的遍历，每次都要把当前的值加到 sum 里去
+5. sum < target 时，说明窗口小了，right++
+6. sum > target 时，说明窗口大了，left++
+7. 当一致时，就是答案，我们把这个[left, right] 区间中的值，取出来就是一个答案
+8. 接着我们把 left 继续右移，记着 sum 也要减少对应的值，继续去找其他的答案
+
+### 代码
+
+* javascript
+
+```javascript
+/**
+ * @param {number} target
+ * @return {number[][]}
+ */
+var findContinuousSequence = function(target) {
+    let left = 1, right = 1; // 定义窗口
+    let sum = 0; // 计算每一轮的 sum
+    const ans = [] // 最终返回结果
+    let midVal = target >> 1
+    while(left <= midVal) {
+        if(sum < target) {
+            //小了，右窗口右移
+            sum += right
+            right++
+        }else if(sum > target) {
+            // 大了，左窗口左移
+            sum -= left
+            left++
+        }else {
+            // 一定包含两个数，还一定是相邻的，那么就一定是在 二分之一处
+            let temp = []
+            for(let i = left;i < right;i++) {
+                temp.push(i)
+            }
+            ans.push(temp)
+            sum -= left
+            left++
+        }      
+    }
+    return ans
+};
+```
+

@@ -33,12 +33,12 @@ public class MybatisPlusGenerator {
                 })
                 .templateConfig(config -> {
                     config.disable(TemplateType.SERVICE)  // 不需要service接口层
-                            .serviceImpl("/templates/controller.java")  // 设置模板，是复制在此项目resources目录下的路径
-                            .serviceImpl("/templates/serviceImpl.java")  // 设置模板，是复制在此项目resources目录下的路径
+//                            .serviceImpl("/templates/controller.java")  // 设置模板，是复制在此项目resources目录下的路径
+//                            .serviceImpl("/templates/serviceImpl.java")  // 设置模板，是复制在此项目resources目录下的路径
                     ;
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("t_automat_info","t_automat_record") // 设置需要生成的表名
+                    builder.addInclude("t_people_effect") // 设置需要生成的表名
                             .addTablePrefix("t_", "b_", "xj_") // 设置过滤表前缀
                             // entity配置
                             .entityBuilder()

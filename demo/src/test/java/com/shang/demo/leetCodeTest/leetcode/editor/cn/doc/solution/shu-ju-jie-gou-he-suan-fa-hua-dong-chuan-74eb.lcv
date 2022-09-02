@@ -1,0 +1,152 @@
+### 1，滑动窗口解决
+
+滑动窗口，这里也叫双指针，因为题中要求的是**正整数**，**连续的**，并且至少含有**两个数**。所以我们使用两个指针，一个left指向1，一个right指向2，他们分别表示窗口的左边界和右边界。然后计算窗口内元素的和。
+
+- **如果窗口内的值大于target，说明窗口大了，left往右移一步。**
+- **如果窗口内的值小于target，说明窗口小了，right往右移一步。**
+- **如果窗口内的值等于target，说明找到了一组满足条件的序列，把它加入到列表中**
+
+我们以示例1为例来看下视频演示
+
+![offer57-2.mp4](https://leetcode.cn/problems/he-wei-sde-lian-xu-zheng-shu-xu-lie-lcof/solution/shu-ju-jie-gou-he-suan-fa-hua-dong-chuan-74eb/279dae84-89e1-4798-99a4-a00520507919)
+
+因为至少有两个数，所以窗口的左边界```left <= target / 2```，题中是把找到的序列添加到列表list中，最后在转化为二维数组，来看下代码
+
+* []
+
+```Java
+public int[][] findContinuousSequence(int target) {
+    int left = 1; // 滑动窗口的左边界
+    int right = 2; // 滑动窗口的右边界
+    int sum = left + right; // 滑动窗口中数字的和
+    List<int[]> res = new ArrayList<>();
+    //窗口的左边是窗口内的最小数字，只能小于等于target / 2,
+    //因为题中要求的是至少含有两个数
+    while (left <= target / 2) {
+        if (sum < target) {
+            //如果窗口内的值比较小，右边界继续向右移动，
+            //来扩大窗口
+            sum += ++right;
+        } else if (sum > target) {
+            //如果窗口内的值比较大，左边边界往右移动，
+            //缩小窗口
+            sum -= left++;
+        } else {
+            //如果窗口内的值正好等于target，就把窗口内的值记录
+            //下来，然后窗口的左边和右边同时往右移一步
+            int[] arr = new int[right - left + 1];
+            for (int k = left; k <= right; k++) {
+                arr[k - left] = k;
+            }
+            res.add(arr);
+            //左边和右边同时往右移一位
+            sum -= left++;
+            sum += ++right;
+        }
+    }
+    //把结果转化为数组
+    return res.toArray(new int[res.size()][]);
+}
+```
+
+来看下运行结果
+
+![image.png](https://pic.leetcode-cn.com/1618303910-skEYWq-image.png)
+
+<br> </br>
+
+### 2，数学公式解决
+
+我们假设有一组序列满足条件，其中序列的第一个数是```a```，他们分别是```a，a+1，a+2，……，a+（n-1）```，总共有```n```项，根据求和公式我们可以得出```S=n*a+n*(n-1)/2```，而s其实就是target，我们简写成t，我们来研究一下这个公式
+
+![image.png](https://pic.leetcode-cn.com/1618380100-vAeSPG-image.png)
+
+要想求```a```，我们可以通过循环枚举```n```的值，只有```a```是正整数的时候才满足条件，那么这个循环什么时候终止呢，其实很简单，当分子```t-n*(n-1)/2```**小于等于**```0```的时候就可以终止了。
+
+因为题中说了最少要有2个数，所以n从2开始，来看下代码
+
+* []
+
+```Java
+public int[][] findContinuousSequence(int target) {
+    List<int[]> res = new ArrayList<>();
+    int n = 2;
+    //死循环
+    while (true) {
+        int total = target - n * (n - 1) / 2;
+        //当分子小于等于0的时候，退出循环
+        if (total <= 0)
+            break;
+        //如果首项是正整数，满足条件
+        if (total % n == 0) {
+            int[] arr = new int[n];
+            //找出首项的值
+            int startValue = total / n;
+            for (int k = 0; k < n; k++) {
+                arr[k] = startValue + k;
+            }
+            res.add(arr);
+        }
+        //继续找
+        n++;
+    }
+    //反转，比如当target等于9的时候，结果是
+    //[[4,5],[2,3,4]]，但题中要求的是不同
+    // 序列按照首个数字从小到大排列，所以这里反转一下
+    Collections.reverse(res);
+    //把list转化为数组
+    return res.toArray(new int[res.size()][]);
+}
+```
+
+看下运行结果
+
+![image.png](https://pic.leetcode-cn.com/1618379079-VChWEC-image.png)
+
+<br> </br>
+
+### 3，另一种数学解题思路
+
+我们来思考这样一个问题
+
+- 假如target是两个连续数字的和，那么这个序列的首项就是```(target-1)/2```。
+- 假如target是三个连续数字的和，那么这个序列的首项就是```(target-1-2)/3```。
+- 假如target是四个连续数字的和，那么这个序列的首项就是```(target-1-2-3)/4```。
+- ……
+
+证明也很好证，我们随便找一个，假如target是四个连续的序列和，那么这四个数字就是```a，a+1,a+2,a+3```，也就是```4*a+1+2+3=target```，所以他们的首项```a=(target-1-2-3)/4```。
+
+搞懂了上面的原理代码就简单了，我们来看下
+
+* []
+
+```Java
+public int[][] findContinuousSequence(int target) {
+    List<int[]> res = new ArrayList<>();
+    //因为至少是两个数，所以target先减1
+    target--;
+    for (int n = 2; target > 0; n++) {
+        //找到了一组满足条件的序列
+        if (target % n == 0) {
+            int[] arr = new int[n];
+            //找出首项的值
+            int startValue = target / n;
+            for (int k = 0; k < n; k++) {
+                arr[k] = startValue + k;
+            }
+            res.add(arr);
+        }
+        target -= n;
+    }
+    Collections.reverse(res);
+    //把list转化为数组
+    return res.toArray(new int[res.size()][]);
+}
+```
+
+看一下运行结果
+
+![image.png](https://pic.leetcode-cn.com/1618381051-XJkbfs-image.png)
+
+#### 如果觉得有用就给个赞吧，还可以关注我的[LeetCode主页](https://leetcode-cn.com/u/sdwwld/)查看更多的详细题解
+

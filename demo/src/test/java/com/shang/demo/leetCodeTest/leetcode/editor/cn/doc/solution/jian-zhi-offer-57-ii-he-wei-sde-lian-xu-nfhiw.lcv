@@ -1,0 +1,70 @@
+### 解题思路
+
+利用等差数列求和公式降低复杂度
+用到的公式如下：
+$$
+\begin{aligned}
+a_n &= a_1 + (n - 1)q \\
+S_1&=\frac{(a_1+a_n)n}{2} \\
+S_2&=a_1n+\frac{(n-1)n}{2}q
+\end{aligned}
+$$
+其中$q$为等差数列的差，本题中$q = 1$
+$a_n$为等差数列的第n个元素
+
+先通过公式$S_1$找到以1开头的连续序列最高长度，即$a_1 = 1$时求n
+$$
+\begin{aligned}
+a_1 &= 1 \\
+a_n &= 1 +(n-1) \\
+&= n \\
+\frac{(1+n)n}{2} &= target \\
+(1+n)n &= 2target \\
+\end{aligned} \\
+n^2 <2target < (n+1)^2 \\
+n < \sqrt{2target} < n + 1 \\
+n = \lfloor \sqrt{2target} \rfloor
+$$
+
+从最高长度逐个向下枚举，直至长度为2结束
+在判断一个长度是否合适时，需要借助公式$S_2$,即已知n的情况下，求$a_1$，若求出的结果是整数，则代表符合要求,可将其记录到结果中
+$$
+\begin{aligned}
+target &=a_1n+\frac{(n-1)n}{2} \\\\
+a_1n &= target - \frac{(n-1)n}{2} \\\\
+a_1 &= \frac{target - \frac{(n-1)n}{2}}{n}
+\end{aligned}
+$$
+
+实现方面有几处需要注意：
+1. $n = \lfloor \sqrt{2target} \rfloor$代表向下取整，java实现时直接强转int即可
+2. 数组记录结果时要注意长度和空值的处理，new 二维数组时，可以只指定最高纬的大小，低维大小在使用时再指定比较合适题意，最后要根据实际符合要求的数量再缩短一下高维的大小
+3. 判断计算出的$a_1$是否为整数，其实就是上诉公式计算中最后的一步除法是否除尽，实现上可先记录分子，分母，让结果与分母相乘判断是否等于分子即可
+4. 记录结果时从$a_1$一直到$a_n$添加进新new的一维数组即可
+
+### 代码
+
+* java
+
+```java
+class Solution {
+    public int[][] findContinuousSequence(int target) {
+        int maxN = (int) Math.sqrt(2 * target);
+        int[][] ans = new int[maxN][];
+        int count = 0;
+        for (int n = maxN; n >= 2 ; n--) {
+            int t = target - (n - 1) * n / 2;
+            int a1 = t / n;
+            if(a1 * n == t){
+                ans[count] = new int[n];
+                for (int j = 0; j < n; j++) {
+                    ans[count][j] = a1 + j;
+                }
+                count++;
+            }
+        }
+        return Arrays.copyOf(ans, count);
+    }
+}
+```
+
