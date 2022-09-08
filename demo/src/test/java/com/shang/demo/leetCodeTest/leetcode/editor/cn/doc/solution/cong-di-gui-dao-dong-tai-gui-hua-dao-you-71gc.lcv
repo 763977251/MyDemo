@@ -1,0 +1,113 @@
+* java
+
+```java
+class Solution {
+
+    public int maxProfit(int[] prices) {
+        int maxProfit = 0;
+        int min = 0;
+        for (int i = 0; i < prices.length; ++i) {
+            if (prices[min] > prices[i]) {
+                min = i;
+            } else if ( prices[i] - prices[min] > maxProfit) {
+                maxProfit = prices[i] - prices[min];
+            }
+        }
+        return maxProfit;
+    }
+
+/**
+    public int maxProfit(int[] prices) {
+        int buy1 = -prices[0];
+        int sell1 = 0;
+        for (int i = 0; i < prices.length; ++i) {
+            buy1 = Math.max(buy1, -prices[i]);
+            sell1 = Math.max(sell1, buy1 + prices[i]);
+        }
+        return sell1;
+    }
+*/
+
+    // 4.分析依赖
+    // 自己原来值
+    //      int p1 = dp[j];  
+    // j==n时 依赖上一层最大值 ==> 每一层都保留最值 maxProfit
+    //      int p2 = j == n ? dp[i] : Integer.MIN_VALUE;  
+    // i > j时 本层出现p3  求本层出现的最大值 ==> prices极差
+    //      int p3 = i > j ? prices[i] - prices[j] : Integer.MIN_VALUE;  
+    //      dp[j] = Math.max(p1, Math.max(p2, p3));  
+
+/**
+    // 3.根据严格依赖关系 压缩成一维空间 (超时) O(n^2) O(n)
+    public int maxProfit(int[] prices) {
+        // dp[i] 只依赖于 dp[i+1]  可以复用该空间
+        int n = prices.length;
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, 0);
+        for (int i = n - 1; i >= 0; --i) {
+            for (int j = 0; j <= n; ++j) {
+                int p1 = dp[j];
+                int p2 = j == n ? dp[i] : Integer.MIN_VALUE;
+                int p3 = i > j ? prices[i] - prices[j] : Integer.MIN_VALUE;
+                dp[j] = Math.max(p1, Math.max(p2, p3));
+            }
+        }
+        return dp[n];
+    }
+*/
+
+    //    0  1  2  3
+    // 0
+    // 1
+    // 2  
+    // 3  0  0  0  0
+/**
+    // 2.根据递归参数返回值 直接改dp (超空间) (Java栈自上而下递归==>自底而上求解dp) O(n^2) O(n^2)
+    public int maxProfit(int[] prices) {
+        // 参数及其范围对应 i j   返回值对应 dp[i][j]
+        // cur对应i  stoke对应j  stoke==-1 改成了stoke==n
+
+        int n = prices.length;
+        int[][] dp = new int[n + 1][n + 1];
+        for (int i = 0; i < n + 1; ++i) {       // cur == prices.length
+            dp[n][i] = 0;
+        }
+        for (int i = n - 1; i >= 0; --i) {
+            for (int j = 0; j <= n; ++j) {
+                int p1 = dp[i+1][j];
+                int p2 = j == n ? dp[i+1][i] : Integer.MIN_VALUE;
+                int p3 = i > j ? prices[i] - prices[j] : Integer.MIN_VALUE;
+                dp[i][j] = Math.max(p1, Math.max(p2, p3));
+            }
+        }
+        return dp[0][n];
+    }
+*/
+
+/**  1.递归尝试 (超时)
+    public int maxProfit(int[] prices) {
+        return recurse(0, -1, prices);
+    }
+    
+    int max;
+    // 今天index、持股-1表示不持 其他表示持哪天，返回总收益
+    int recurse(int cur, int stoke, int[] prices) {
+        if (cur == prices.length)
+            return 0;
+        if (stoke == -1) {  // 不持股
+            int p1 = recurse(cur + 1, stoke, prices);   // 继续不持股
+            int p2 = recurse(cur + 1, cur, prices);     // 开始持股
+            return Math.max(p1, p2);
+        } else {    // 持股
+            int p3 = recurse(cur + 1, stoke, prices);   // 不卖
+            int p4 = prices[cur] - prices[stoke];       // 卖了 cur > stoke
+            max = Math.max(max, p4);
+            return Math.max(p3, p4);
+        }
+    }
+
+*/
+
+}
+```
+

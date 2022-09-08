@@ -1,0 +1,19 @@
+#### 方法：使用 `outer join`
+
+**算法**
+
+因为表 **Address** 中的 **personId** 是表 **Person** 的外关键字，所以我们可以连接这两个表来获取一个人的地址信息。
+
+考虑到可能不是每个人都有地址信息，我们应该使用 `outer join` 而不是默认的 `inner join`。
+
+* [S6KTzeeX-MySQL]
+
+```mysql
+select FirstName, LastName, City, State
+from Person left join Address
+on Person.PersonId = Address.PersonId
+;
+```
+
+> 注意：如果没有某个人的地址信息，使用 `where` 子句过滤记录将失败，因为它不会显示姓名信息。
+
