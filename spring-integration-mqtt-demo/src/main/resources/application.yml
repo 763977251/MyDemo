@@ -1,0 +1,28 @@
+server:
+  port: 9091
+
+spring:
+  mqtt:
+    enable: true
+    url: tcp://10.251.103.222:1883
+    username: admin
+    password: public1
+    #MQTT-连接服务器默认客户端ID
+    #生产者和消费者是单独连接服务器会使用到一个clientid（客户端id），如果是同一个clientid的话会出现Lost connection: 已断开连接; retrying...
+    #代码里讲clientid后面拼接上服务的ip和端口
+    consumerclientid: consumerclientid
+    producerclientid: producerclientid
+    #连接超时，单位ms
+    timeout: 5000
+    #1.5*Keep Alive 的时间间隔心跳，单位为秒
+    keepalive: 2
+    # 是否自动重连
+    automaticReconnect: true
+    # 是否清除session，如果false不清楚即保持上次的连接
+    cleanSession: true
+    # deviceId
+    #deviceId: your_deviceId
+    # mqtt-topic
+    producertopic: producertopic
+    # 消费者如果要实现多部署不重复消费消息的话，可以使用共享订阅主题：$queue/consumertopic
+    consumertopic: $queue/consumertopic

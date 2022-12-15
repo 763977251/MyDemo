@@ -5,10 +5,8 @@ import com.shang.springValidationDemo.param.TestParam;
 import com.shang.springValidationDemo.param.TestParam2;
 import com.shang.springValidationDemo.response.JsonResponse;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -51,8 +49,9 @@ public class TestController {
      * 测试post请求的参数校验功能
      */
     @PostMapping("/testParam3")
-    public JsonResponse<String> testParam3(@NotEmpty(message = "姓名不能为空") String name,
-                                              @NotNull(message = "年龄不能为空") Integer age) {
+    public JsonResponse<String> testParam3(@NotEmpty(message = "姓名不能为空1") String name,
+                                           @NotNull(message = "年龄不能为空") Integer age,
+                                           @RequestParam("file") MultipartFile file) {
         return new JsonResponse<>(name);
     }
 

@@ -1,0 +1,26 @@
+### 解题思路
+
+库方法的无脑使用
+
+### 代码
+
+* java
+
+```java
+class Solution {
+    // 349
+    public int[] intersection(int[] nums1, int[] nums2) { // 集合
+        Set<Integer> set = new HashSet<>(), list = new HashSet<>();
+        for (int i = 0; i < nums1.length; i++) {
+            set.add(nums1[i]);
+        }
+        for (int i = 0; i < nums2.length; i++) {
+            if (set.contains(nums2[i])) {
+                list.add(nums2[i]);
+            }
+        }
+        return list.stream().mapToInt(t -> t).toArray();
+    }
+}
+```
+
