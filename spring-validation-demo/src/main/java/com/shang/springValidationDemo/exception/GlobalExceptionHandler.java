@@ -1,9 +1,9 @@
 package com.shang.springValidationDemo.exception;
 
 import com.shang.springValidationDemo.response.JsonResponse;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -26,8 +26,8 @@ public class GlobalExceptionHandler {
     /**
      * 处理参数绑定异常
      */
-    @ExceptionHandler(BindException.class)
-    public JsonResponse<String> handleMethodArgumentNotValidException(BindException e) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public JsonResponse<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         BindingResult result = e.getBindingResult();
         List<FieldError> errorList = result.getFieldErrors();
         List<String> errorMessages = errorList.stream().map(x -> String.format("%s:%s", x.getField(), x.getDefaultMessage())).toList();

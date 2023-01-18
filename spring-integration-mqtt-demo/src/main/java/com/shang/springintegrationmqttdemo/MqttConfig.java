@@ -39,7 +39,7 @@ public class MqttConfig {
     private String password;
 
     @Value("${spring.mqtt.url}")
-    private String hostUrl;
+    private String[] hostUrl;
 
     @Value("${spring.mqtt.producerclientid}")
     private String producerClientId;
@@ -81,7 +81,7 @@ public class MqttConfig {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setUserName(username);
         mqttConnectOptions.setPassword(password.toCharArray());
-        mqttConnectOptions.setServerURIs(new String[]{hostUrl});
+        mqttConnectOptions.setServerURIs(hostUrl);
         mqttConnectOptions.setKeepAliveInterval(keepalive);
         mqttConnectOptions.setCleanSession(cleanSession);
         mqttConnectOptions.setAutomaticReconnect(automaticReconnect);
