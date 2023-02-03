@@ -1,0 +1,35 @@
+# 思路
+
+- 判断字符串s是否为字符串t的子串；
+- 如果s为空，空字符串为任意字符串的子串，返回true；
+- 新建两个指针j,i分别指向s和t两个字符串；
+- 指向字符串t的指针i逐个往前，如果字符串t的第i个字符等于字符串s的第j个字符，字符串s的指针也往前一步
+- 如果j的大小等于字符串s的长度，说明字符串t有顺序对应s的每个字符，即字符串s使字符串t的子串，返回true；否则返回false。
+
+## 代码
+
+* []
+
+```java
+class Solution {
+    public boolean isSubsequence(String s, String t) {
+        if(s.length()==0){
+            return true;
+        }
+        for (int i = 0, j = 0; i < t.length(); i++) {
+            if (s.charAt(j) == t.charAt(i)) {
+                j++;
+            }
+            if (j == s.length()) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```
+
+## 复杂度
+
+时间复杂度O(n)
+空间复杂度O(1)

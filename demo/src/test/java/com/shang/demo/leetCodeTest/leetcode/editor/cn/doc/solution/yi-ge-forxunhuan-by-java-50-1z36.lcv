@@ -1,0 +1,21 @@
+### 解题思路
+
+循环字符串，当它的某个字符的第一次出现的位置和最后一次出现的位置下标相同则表示该字符只出现了一次，返回第一个首位相同的字符即可
+
+### 代码
+
+* java
+
+```java
+class Solution {
+    public int firstUniqChar(String s) {
+       for(int i=0;i<s.length();i++){
+            if(s.indexOf(s.charAt(i))==s.lastIndexOf(s.charAt(i))){
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+```
+
