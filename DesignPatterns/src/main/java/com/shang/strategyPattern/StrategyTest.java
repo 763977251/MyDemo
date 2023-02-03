@@ -2,6 +2,9 @@ package com.shang.strategyPattern;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author 10699518
+ */
 public class StrategyTest {
     @Test
     public void test() {

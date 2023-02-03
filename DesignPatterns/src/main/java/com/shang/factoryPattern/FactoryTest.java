@@ -6,11 +6,11 @@ public class FactoryTest {
     @Test
     public void test1(){
         SenderFactory senderFactory = new SenderFactory();
-        Sender mail = senderFactory.produce("mail");
+        Sender mail = senderFactory.produce(MailSender.class);
         mail.send();
-        Sender sms = senderFactory.produce("sms");
+        Sender sms = senderFactory.produce(SmsSender.class);
         sms.send();
-        senderFactory.produce("mmm");
+        senderFactory.produce(null);
     }
 
     @Test

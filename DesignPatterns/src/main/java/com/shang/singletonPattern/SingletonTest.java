@@ -14,7 +14,7 @@ public class SingletonTest {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SingletonTest.class);
 
-    private static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(5, 20, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new BasicThreadFactory.Builder().namingPattern("test-").build(), new ThreadPoolExecutor.DiscardPolicy());
+    private static final ThreadPoolExecutor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(5, 20, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new BasicThreadFactory.Builder().namingPattern("test").build(), new ThreadPoolExecutor.DiscardPolicy());
 
     public static void main(String[] args) {
         int count = 10;
