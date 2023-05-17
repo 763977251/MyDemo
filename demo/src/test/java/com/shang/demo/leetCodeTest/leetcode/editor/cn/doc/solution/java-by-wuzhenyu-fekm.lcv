@@ -1,0 +1,30 @@
+有点纳闷, 这特么是简单题? 既然是简单题, 暴力肯定是可以过的了, 那就不爆了(doge
+第一时间想到利用next数组解决, 但是没解决掉, 头疼
+
+然后便想到通过移位比较, 简单移位比较整个数组太暴力了, 优化优化
+假设基串长度为x, s向左移x位 与 s右移x位 进行比较也应该是相同的
+当 前x个字符串 与 后x个字符串 也相同后, 你会发现很神奇的传导现象
+**错位法!**
+![image.png](https://pic.leetcode-cn.com/1647251715-EIQdLe-image.png)
+
+**小优化**
+x肯定要是s长度的约数
+库里的字符串比较函数肯定比自己写的优化好吧?(库里?幻听)
+
+* java
+
+```java
+class Solution {
+    public boolean repeatedSubstringPattern(String s) {
+        int lens = s.length(), i = 0;
+        while (++i < lens) {
+            if (lens % i != 0) continue;
+            if (s.substring(lens - i, lens).equals(s.substring(0, i))) // 判断x是不是基串
+                if (s.substring(i, lens).equals(s.substring(0, lens - i))) return true; // 判断拿去x后是否相等
+        }
+        return false;
+    }
+}
+```
+
+![image.png](https://pic.leetcode-cn.com/1647250482-Pookly-image.png)
