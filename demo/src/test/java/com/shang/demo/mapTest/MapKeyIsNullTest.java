@@ -1,4 +1,4 @@
-package com.shang.demo;
+package com.shang.demo.mapTest;
 
 import com.shang.demo.pojoConvertTest.UserDTO;
 
