@@ -42,7 +42,7 @@ package com.shang.demo.leetCodeTest.leetcode.editor.cn;//给定一个非空的�
 
 
 //leetcode submit region begin(Prohibit modification and deletion)
-class Solution {
+class Solution459 {
     public boolean repeatedSubstringPattern(String s) {
         int lens = s.length();
         int i = 0;
