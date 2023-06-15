@@ -30,7 +30,7 @@ package com.shang.demo.leetCodeTest.leetcode.editor.cn;//把n个骰子扔在地�
 import java.util.Arrays;
 
 //leetcode submit region begin(Prohibit modification and deletion)
-class Solution {
+class Solution60 {
     public double[] dicesProbability(int n) {
         double[] dp = new double[6];
         Arrays.fill(dp, 1.0 / 6.0);
