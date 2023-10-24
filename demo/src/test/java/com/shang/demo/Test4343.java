@@ -13,7 +13,14 @@ public class Test4343 {
 //    }
 
     public static void main(String[] args) {
-        Integer i = null;
+        Integer NO = 0;
+        if(NO.equals(Integer.parseInt("0"))){
+            System.out.println(1);
+        } else {
+            System.out.println(0);
+        }
+
+//        Integer i = null;
 
 
 //        String s = convertToExcelTitle(16);

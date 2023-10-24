@@ -30,4 +30,18 @@ public class StrTest11 {
         String orgPathId = "1/1179679/9760774/767197196/97588266/961000953";
         System.out.println(Arrays.asList(orgPathId.split("/")));
     }
+
+    @Test
+    public void test2(){
+        String orgPathId = "sss,十四说四十,,";
+        String[] split = orgPathId.split(",");
+        System.out.println(Arrays.asList(split));
+    }
+    @Test
+    public void test3(){
+        String orgPathId = "1122-36-23-000098-34";
+//        String orgPathId = "11223623000098";
+        System.out.println(orgPathId.substring(0,orgPathId.lastIndexOf("-")+1));
+        System.out.println(orgPathId.substring(0,orgPathId.length() - 1));
+    }
 }
