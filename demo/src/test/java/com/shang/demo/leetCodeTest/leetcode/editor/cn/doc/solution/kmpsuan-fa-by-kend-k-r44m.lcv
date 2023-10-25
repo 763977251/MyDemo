@@ -1,0 +1,68 @@
+虽然之前数据结构学过，但用的是手算模拟，对代码还是不熟悉。
+
+> 参考BugTime佬的题解：[链接](https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/solutions/1119642/duo-tu-yu-jing-xiang-jie-kmp-suan-fa-by-w3c9c/)
+
+##### 求next数组
+
+先上代码，`next[i]`表示`[0,i]`区间的**最长相同前后缀长度**
+
+* 
+
+```
+vector<int> next(n);
+for(int l=0,r=1; r<n; r++){
+    while(l>0 && p[l]!=p[r]) l=next[l-1];
+    if(p[l]==p[r]) l++;
+    next[r]=l;
+}
+```
+
+- `left`一直指向最长**前缀**的后一个元素，其值代表最长前缀长度
+- `right`一直指向最长**后缀**的后一个元素
+  ![image.png](https://pic.leetcode.cn/1691381538-JMaIOe-image.png)
+  若此时不匹配，`l=next[l-1]`
+  ![image.png](https://pic.leetcode.cn/1691381616-ThrYYK-image.png)
+  **注意：** 这里后缀和前缀一样缩水了，若`p[l]==p[r]`，则前缀+1
+
+##### 利用next数组求是否是子串
+
+当i、j对应的字母不同时，回退`j=next[j-1]`
+
+* 
+
+```
+for(int i=0,j=0; i<m; i++){
+    while(j>0 && s[i]!=p[j]) j=next[j-1];
+    if(s[i]==p[j]) j++;
+    if(j==n) return i-n+1;
+}
+```
+
+![image.png](https://pic.leetcode.cn/1691381986-ZyjqvX-image.png)
+完整代码如下：
+
+* 
+
+```
+class Solution {
+public:
+    int strStr(string s, string p) {
+        int m=s.size(), n=p.size();
+        if(n==0) return 0; 
+        vector<int> next(n);
+        for(int l=0,r=1; r<n; r++){
+            while(l>0 && p[l]!=p[r]) l=next[l-1];
+            if(p[l]==p[r]) l++;
+            next[r]=l;
+        }
+
+        for(int i=0,j=0; i<m; i++){
+            while(j>0 && s[i]!=p[j]) j=next[j-1];
+            if(s[i]==p[j]) j++;
+            if(j==n) return i-n+1;
+        }
+        return -1;
+    }
+};
+```
+

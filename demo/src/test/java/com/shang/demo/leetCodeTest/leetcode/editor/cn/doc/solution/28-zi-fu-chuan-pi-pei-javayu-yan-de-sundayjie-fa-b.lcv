@@ -1,0 +1,52 @@
+* java
+
+```java
+/** 
+ * Sunday解法，时空供参考
+ * 执行用时 :1 ms, 77.41%
+ * 内存消耗 :36.1 MB, 95.48%
+ */
+class Solution {
+    public int strStr(String haystack, String needle) {
+        if (haystack == null)
+            return -1;
+        if (needle == null || needle.length() == 0)
+            return 0;
+        if (haystack.length() < needle.length())
+            return -1;
+        int len = haystack.length();
+        int slen = needle.length();
+        int k = 0;
+        //shift记录needle中，每个字符到字符串最右端的距离，相同字符取靠右的值，
+        //用处为，当needle与haystack的子串不匹配时，
+        //设当前haystack子串的下一位置字符为α，分两种情况处理：
+        //1 若α存在于needle中，则右移shift[α]个单位进行对齐；
+        //2 若α不在needle中，则右移needle.length长度。
+        //然后继续比较。该解法与暴力解法相比，无需退至needle头重新比较。
+        int[] shift = new int[256];
+        for (char c : needle.toCharArray())
+            shift[c] = slen - k++;
+        int i = 0;
+        while (i + slen <= len) {
+            if (iequals(haystack, i, needle))
+                return i;
+            else {
+                if (i + slen < len && shift[haystack.charAt(i + slen)] != 0)
+                    i += shift[haystack.charAt(i + slen)];
+                else
+                    i += slen;
+            }
+        }
+        return -1;
+    }
+    
+    //避免使用substring取子串，生成过多的String对象
+    private boolean iequals (String str1, int offset, String str2) {
+        for (int i = 0; i < str2.length(); i++)
+            if (str2.charAt(i) != str1.charAt(i + offset))
+                return false;
+        return true;
+    }
+}
+```
+

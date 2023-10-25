@@ -1,0 +1,42 @@
+> Problem: [28. 找出字符串中第一个匹配项的下标](https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/description/)
+
+[TOC]
+
+# 思路
+
+> 两个指针分别指向haystack 和 needle 的首字符，依次向后遍历匹配。
+
+# 解题方法
+
+> 当needle的第一个字符开始匹配到之后两个指针都右移，如果needle 的指针移到了最后时表明匹配成功，直接返回 l-r+1，若刚开始没匹配到，就右移haystack的指针，直到第一个字符匹配成功或者haystack指针移动到末尾结束。当匹配到中间失败时，needle指针归零，haystack指针移动到第一个匹配成功位置的下一位。
+
+# Code
+
+* []
+
+```Java
+
+class Solution {
+  public int strStr(String haystack, String needle) {
+      int l = 0,r = 0;
+      while(r <= needle.length()-1 && l <= haystack.length()-1){
+          while(r <= needle.length()-1 && l <= haystack.length()-1 && needle.charAt(r) == haystack.charAt(l)){
+              r++;
+              if(r == needle.length()){
+                  return l-r+1;
+              }
+              l++;
+          }
+          if(r == 0){
+              l++;
+          }else if(r != 0 ){
+              l = l-r+1;
+              r = 0;
+          }
+
+      }
+      return -1;
+  }
+}
+```
+

@@ -1,0 +1,104 @@
+> Problem: [28. 找出字符串中第一个匹配项的下标](https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/description/)
+
+[TOC]
+
+# 思路
+
+这道题是一道很经典的关于字符串匹配的问题，解决字符串匹配问题的算法有BF算法，RK算法，KMP算法，BM算法，Sunday算法，FA（有限自动机）算法等；
+
+> BF算法：暴力匹配算法（Brute Force）：最基础的字符串匹配算法，对于每一个在主串中的可能位置，检查是否与模式串匹配。时间复杂度为O(m*n)，其中m和n分别为主串和模式串的长度；
+
+> RK算法：Rabin-Karp算法：通过计算主串和模式串的哈希值来比对。如果哈希值相等，则进行一次暴力匹配确认。时间复杂度为O(m+n)，但是有可能遇到哈希冲撞。
+
+> KMP算法：Knuth-Morris-Pratt算法（KMP）：利用已知信息，避免在主串中回溯。时间复杂度为O(m+n)；
+
+> BM算法Boyer-Moore算法：从模式串的尾部开始匹配，且利用了两种启发式规则（坏字符规则和好后缀规则）来尽量减少比较次数，平均时间复杂度为O(n/m)（n为主串长度，m为模式串长度），最差为O(m*n)；
+
+> Sunday算法：类似Boyer-Moore，不过启发规则更简单，匹配过程中仅需考虑主串在比较中的下一个字符；
+
+> 有限自动机算法（Finite Automata）：建立一个状态机来匹配字符串。时间复杂度为O(n)，但是需要额外的预处理时间和空间，通常用于复杂的模式匹配；
+
+这个题我们只采用KMP算法来，KMP算法的难易度和复杂度都是比较好的，这个题只需要返回模式串在主串中的第一次返回的位置即可
+
+# 解题方法
+
+KMP算法的关键是构造一个叫做next数组的数据结构。next数组对于模式字符串的每个位置i，保存了一个数值，表示在模式串中，前i个字符组成的子串的最长公共前后缀的长度
+
+我们使用next数组来加速在主串中的搜索过程。在每一步，我们试图将主串的第i个字符和模式串的第j个字符进行匹配。如果它们相等，我们就让i和j都加一。否则，我们用next数组来找出下一个可能的j值
+
+这样，我们可以看到，每一步之后，要么i加一，要么j变小，所以整个过程在有限的步数之后必然会结束。如果我们找到了完全的匹配（也就是j等于模式串的长度），我们就返回i-j（也就是匹配的起始位置）。否则，如果我们已经检查了所有的主串但是没有找到匹配，我们就返回-1
+
+> 详细的思路请看下面的代码
+
+# 复杂度
+
+- 时间复杂度:
+
+> $O(m + n)$
+> m和n分别为主串和模式串的长度。这是因为在算法执行过程中，主串的每个元素和模式串的每个元素只会被访问一次
+
+- 空间复杂度:
+
+> $O(n)$
+> n为模式串的长度。这是因为我们需要建立一个与模式串长度相等的next数组来存储每个前缀子串的最长公共前后缀的长度
+
+![1.jpg](https://pic.leetcode.cn/1698069142-gbWmWB-1.jpg)
+
+# Code
+
+* []
+
+```C++
+
+class Solution {
+private:
+    vector<int> getNext(const string& needle) {
+        vector<int> next(needle.size(), 0);
+        int j = 0;
+        //计算模式串 needle 的最长前缀和后缀的匹配长度
+        for(int i = 1; i < needle.size(); i++) {
+            //如果当前不匹配，则回溯到上一个匹配的位置
+            while(j > 0 && needle[i] != needle[j]){
+                j = next[j - 1];
+            }
+            //如果当前字符匹配，则增加匹配长度
+            if(needle[i] == needle[j]){
+                j++;
+            }
+            //当字符不匹配时，回溯到模式串最长公共前后缀的下一个位置
+            next[i] = j;
+        }
+        return next;
+    }
+    //在主串 haystcak 中查找模式串 needle ，返回第一次匹配的位置
+    int kmp(const string& haystack, const string& needle) {
+        vector<int> next = getNext(needle);
+        int j = 0;
+        for(int i = 0; i < haystack.size(); i++){
+            //如果当前字符不匹配，回溯到上一个匹配的位置
+            while(j > 0 && haystack[i] != needle[j]){
+                j = next[j - 1];
+            }
+            //如果当前字符匹配，增加匹配的长度
+            if(haystack[i] == needle[j]){
+                j++;
+            }
+            //如果完全匹配，返回匹配的起始位置
+            if(j == needle.size()){
+                return i - needle.size() + 1;
+            }
+        }
+        return -1; // 没有找到匹配项，返回 -1
+    }
+
+public:
+    int strStr(string haystack, string needle) {
+        if (needle.empty()) { // 处理特殊情况，如果模式串为空，则直接返回 0
+            return 0;
+        }
+        
+        return kmp(haystack, needle); // 执行 KMP 算法
+    }
+};
+```
+

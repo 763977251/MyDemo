@@ -1,0 +1,35 @@
+### 解题思路
+
+正常思路肯定是拿一个哈希表去记录每个出现过的num，然后遍历一遍哈希表，这样没出现过的num就可以直接保存下来。
+这样时间复杂度和空间复杂度都是O(n)。
+如何把空间复杂度降低下来呢？那就不能开哈希表，考虑用nums本身作为哈希表，因为nums中原来的数是在[1, n]之间的，所以，如果对原来的数随意+n，在模运算之后还能得到原来的值。
+对于当前num，将下标为num-1的位置+n，代表这个num出现过一次了。
+也就是说nums现在有两重意义，第一重是哈希表，对于任意下标i，范围[0, n-1]，如果nums[i]>n，则说明i+1这个数出现过；第二重是原来的数组，在所有num%n的意义下，nums还是原来的数组不变。
+
+为什么能这么干呢？我认为是+n和%n反操作，这使得我们在给num+n的时候，原有的num信息仍然保持不变。
+
+### 代码
+
+* java
+
+```java
+class Solution {
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        List<Integer> ans = new ArrayList<Integer>();
+        int n = nums.length;
+        for(int num : nums){
+            int x = (num - 1) % n;
+            nums[x] += n;
+        }
+
+        for(int i = 0; i < n; i++){
+            if(nums[i] <= n){
+                ans.add(i + 1);
+            }
+        }
+        
+        return ans;
+    }
+}
+```
+

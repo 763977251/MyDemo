@@ -1,0 +1,303 @@
+# 一、前后缀
+
+**例如：abcdefg
+前缀包括：a，ab，abc，abcd，abcde，abcdef
+后缀包括：g，fg，efg，defg，cdefg，bcdefg
+总结：包括第一个但不包括最后一个字符的所有子串称为前缀，包括最后一个但不包括第一个字符的所有子串称为后缀**
+
+# 二、最长公共前后缀
+
+**顾名思义就是字符串里存在相等的前缀与后缀的两个字串，最长也就是所有相等的前后缀中最长的那一个
+例如：abcdeabc  中最长的公共前后缀也就是abc**
+
+![image-20230817120505977.png](https://pic.leetcode.cn/1693716275-xoEGJT-image-20230817120505977.png)
+**下面是几个例子：
+1、abcabca
+2、abcabcdabc
+3、aaaaaa
+公共前后缀：
+1、abca
+2、abc
+3、aaaaa**
+
+# 三、KMP算法
+
+**KMP算法就是在子串与主串匹配时，匹配失败子串返回特定的位置，主串不返回**
+
+**例如：主串：xyxyxyz        子串：xyz**
+![image-20230817121601093.png](https://pic.leetcode.cn/1693716458-HMoZbR-image-20230817121601093.png)
+
+**z位置出现错误，j 回溯到起点，i不变**
+![image-20230817121828355.png](https://pic.leetcode.cn/1693716497-yuzqrL-image-20230817121828355.png)
+
+**蓝色代表上一次匹配错误的地方，红色部位又匹配错误，j继续回溯到起点，i不变**
+![image-20230817125041395.png](https://pic.leetcode.cn/1693716531-afKOFw-image-20230817125041395.png)
+
+**这样使时间复杂度从原来的O(n^2)变为现在的O(n)，但是kmp的强大远不止于此**
+
+**例如：主串：arr1[] = "abcababcabc"，子串：arr2[] = “abcabc”。**
+
+**一、j的位置匹配失败，回溯到c的位置上，i不变**
+
+![image-20230817130606445.png](https://pic.leetcode.cn/1693716633-qfPvvO-image-20230817130606445.png)
+
+**二、j的位置上依然发生错误，j回溯到a的位置上，i不变**
+
+![image-20230817130753457.png](https://pic.leetcode.cn/1693716690-qgiyJh-image-20230817130753457.png)
+
+**三、j继续回溯到a位置**
+![image-20230817131046232.png](https://pic.leetcode.cn/1693716766-HoJqDk-image-20230817131046232.png)
+
+**现在思考为什么第一步错误不回溯到起点，而是回溯到c，这就是kmp的强大，我们抛弃主串，来解析以下子串**
+![image-20230817131344062.png](https://pic.leetcode.cn/1693716794-hXKqnJ-image-20230817131344062.png)
+
+**我们假设蓝色部位出错，查看蓝色部位的最长公共前后缀，为ab**
+![image-20230817131519701.png](https://pic.leetcode.cn/1693716844-LpaPWF-image-20230817131519701.png)
+
+**如图，最长公共前后缀，为ab，所以此时会有绿色的三个部位一定相等，我们只需把出错的部位回溯到c即可，前面ab我们不需要再次进行比较，只需要从第三个元素开始比较，时间复杂度＊＊＊减少，变成如下图所示**
+![image-20230817131953599.png](https://pic.leetcode.cn/1693716906-zUQaEm-image-20230817131953599.png)
+
+**这个时候较真(我)的人就会发现一个问题，来看下面两个字符串
+主串：abcabcdabcabcabcd
+模式串：abcabcdabcd**
+
+![image.png](https://pic.leetcode.cn/1693717729-SPCqMW-image.png)
+
+**模式串的最长公共前后最为abc，按照原来的想法是将前半部分的abc移动到后半部分的abc**
+
+![image.png](https://pic.leetcode.cn/1693717886-hkVFRl-image.png)
+**但是发现中间也有一段与前后缀相等的子串，为什么不是移动到粉色部分的abc呢？**
+![image.png](https://pic.leetcode.cn/1693718012-IcFKOB-image.png)
+**移动到后缀上一定能保证前面的不会有几率匹配成功吗？经过我一个小时的拷打，我验证了公共前后缀的由来，我将这个验证方法称为头对齐与尾对齐**
+
+# 四、头对齐与尾对齐
+
+**下面用头对齐与尾对齐来解析这段字符串
+头对齐：也就是模式串的第一个字符进行对齐**
+![image.png](https://pic.leetcode.cn/1693718784-ETreng-image.png)
+
+**灰色的位置匹配失败，那么只需要将第一个字符(a)移动到下一个主串当中与之匹配的位置，前面的可以保证一定不匹配，发现有两个可移动的位置，那么就要计算效益最高的移动位置**
+
+**假设移动到黄色位置效益最高**
+![image.png](https://pic.leetcode.cn/1693718874-latApo-image.png)
+**因为刚才是灰色的位置出错，所以我们的想法是将已匹配过的子串去没必要在匹配一次，所以就直接从刚才出错的部位开始匹配，但是我们要保证前面那一段一定能匹配成功**
+![image.png](https://pic.leetcode.cn/1693719206-lWoMil-image.png)
+
+**也就是图中的两个蓝色部位一定能匹配成功，我们才能从刚才出错的位置开始匹配，发现如果要保证两个蓝色部位子串一定相等的话，他就是必须满足最长公共前后最，并不满足，所以继续假设移动到粉色位置效益最大**
+![image.png](https://pic.leetcode.cn/1693719595-MsqmhI-image.png)
+**此时就保证黑色部位相等，也就是满足最长公共前后缀，发现刚好满足**
+
+**尾对齐：也就是把匹配失败的前一个字符作为标记，将前面相同的字符移动到标记处，比较后一位出错元素即可**
+
+![image.png](https://pic.leetcode.cn/1693719870-gJeqeN-image.png)
+
+**将蓝色部位移动到标记位置**
+![image.png](https://pic.leetcode.cn/1693720020-krDRYr-image.png)
+
+**此时的想法与头对齐一致，从出错的位置开始匹配，但是要保证前面一定能匹配成功**
+![image.png](https://pic.leetcode.cn/1693720112-zPtILs-image.png)
+也就是黑色部位要能匹配成功，发现如果匹配成功那就满足黑色部位为最长公共前后缀，不满足，所以继续黄色部位移动到标记处
+![image.png](https://pic.leetcode.cn/1693720279-HBdCtz-image.png)
+
+**发现黑色部位相等，所以满足最长公共前后缀**
+
+**结论：同时满足头对齐与尾对齐的一定存在最长公共前后缀，反之一定不存在，这就是为什么公共前后缀的效益最高，以上就是对移动效益的证明，接下来进入主题，求next与nextval**
+
+## 五、求next数组
+
+**假设：子串   abcabc、求出每一个元素的next数组值**
+
+**第一个元素a：前面无元素，默认为-1， next[0] = -1**
+
+**第二个元素b：默认为0, next[1] = 0**
+
+**第三个元素c：前面无最长公共前后缀名，所以需要回溯到起点，让第一个元素与当前出错的主串位置进行比较，next[2] = 0**
+
+**第四个元素a：前面无最长公共前后缀名，所以需要回溯到起点，让第一个元素与当前出错的主串位置进行比较，next3] = 0**
+
+**第五个元素b：前面有公共最长前后缀名：a、长度为1、所以next[4] = 1**
+
+**第六个元素c：前面有公共最长前后缀名：ab、长度为2、所以next[5] = 2**
+
+**依次类推第n个？手算不现实，接下来用数学表示出来算法**
+
+* 
+
+```
+str[11] = "abcababcabc"
+next[] = {-1, 0, ?, ?....}
+next数组前两个为默认值，从第三个开始算
+
+此时我们定义j为str的下标
+```
+
+![image.png](https://pic.leetcode.cn/1693720573-fgNJTH-image.png)
+
+**（1）、假设我们已知Next = { -1 , 0 , 0 , 0 , 1 , 2 , 1 , 2 , 3 ,? }，需要求解Next[9] = ?**
+![image.png](https://pic.leetcode.cn/1693720588-MWRDdU-image.png)
+
+**此时我们让j = 8，next[j] = 3，k = next[j]**
+
+**（1）str[0 - >k] = "abca"      <===>    （2）str[j-k -> j] = "abca"**
+
+**此时如果（1） = （2），那么我们的next[j + 1]值就等于k+1、换个说法就是，如果str[k] = str[j]，那么next[j + 1] = k + 1，很难理解，直接上图**
+![image.png](https://pic.leetcode.cn/1693720616-ijqmNB-image.png)
+**当 j = 8时，我们可以得知最长公共前后缀名也就是next[j] = k = 3  =>  abc**
+
+**假设j = 8匹配出错，我们需要将j回溯到next[j]也就是str[3] = a的位置，当j = 9时，我们是不是只需要判断str[k] 是否等于str[j]**
+![image.png](https://pic.leetcode.cn/1693720633-XCZvVL-image.png)
+
+**红色部位如果相等，我们的next[9]也就是j = 9的最长公共前后缀名是只需要在j = 8的基础上加1，所以next[9] = k + 1，一定要记住k就是最大前后相等子串长度**
+
+**接下来是不相等的情况str[j] != str[k]**
+
+**str[] = "abcababcabc"，假设我们已知Next = { -1 , 0 , 0 , 0 , 1 , 2 , ？ }，需要求解Next[6] = ？**
+![image.png](https://pic.leetcode.cn/1693720651-tEGXpK-image.png)
+
+**步骤同上让j = 5，next[j] = k = 2，此时str[j] != str[k]**
+
+**我们直接把子串复制一份，str2，让k做str2的下标，把str看成主串，因为此时k = 2，j = 5，所以发现红色位置匹配失败，也就是str[j] != str2[k]，所以k需要进行回溯，回溯到next[k]的位置上，也就是k = next[k] = next[2] = 0**
+
+![image.png](https://pic.leetcode.cn/1693720671-wMztbz-image.png)
+**此时str[k] => str[0]    =   str[j] => str[5] = "a"，又回到了上面相等的情况，以此类推，即可求出第n个元素的next数组值**
+
+**next数组求完了，你以为就够了吗，继续分析**
+![image.png](https://pic.leetcode.cn/1693720699-xNMukk-image.png)
+**假设：字符串"aaaaab"，假设蓝色位置匹配出错，我们要将j回溯到next[j] = 3，但是str[next[k]] = str[j]，str[j]匹配失败了，str[next[j]]是不是一样的匹配失败以此类推，结果如下**
+
+* 
+
+```
+j = 4
+str[j] 匹配失败：j = next[j] = next[4] = 3
+j = 3
+str[j] 依然匹配失败：j = next[j] = next[3] = 2
+j = 2
+str[j] 依然匹配失败：j = next[j] = next[2] = 1
+j = 1
+str[j] 依然匹配失败：j = next[j] = next[1] = 0
+j = 0
+依然匹配失败，这样是不是又回到了原始，一个一个的回溯，时间复杂度等于原来的BF算法
+```
+
+**下面来看一个例子**
+
+**字符串："abccbcabccbc"**
+![image.png](https://pic.leetcode.cn/1693720764-pqaChX-image.png)
+
+**假设我们在蓝色部位匹配错误，此时j = 7， next[j] = 1，按照原来的next数组我们需要将j回溯到next[j] = next[7] = 1的位置**
+
+**此时str[next[j]] = str[j]，既然str[j]都匹配失败了，那么str[next[j]]是不是一定会匹配失败，就会继续进行回溯到next[next[j]]的位置，所以我们需要将数组进行改进，这就是我们的nextval数组**
+
+**如上述所说，如果str[j] = str[next[j]] && str[j]匹配失败，我们需要将j回溯到next[next[j]]的位置，所以nextval[j] = nextval[next[j]]**
+
+**如果不相等，是不是只回溯到next[j]的位置即可，所以nextval[j] = next[j]**
+
+**总结：**
+
+**str[j] = str[next[j]]   那么   nextval[j] = nextval[next[j]]**
+
+**str[j] != str[next[j]]   那么   nextval[j] = next[j]**
+
+代码如下：
+
+* 
+
+```
+class Solution {
+    public int strStr(String haystack, String needle) {
+        int i = 0;
+        int j = 0;
+        int len1 = haystack.length();
+        int len2 = needle.length();
+
+        int[] Next = new int[len2 + 1];
+        int[] Nextval = new int[len2 + 1];
+        if (len2 == 0)
+            return -1;
+        if (len1 == 0 || len1 < len2)
+            return -1;
+        getNext(Next, Nextval, needle);
+        
+        while (i < len1 && j < len2) {
+            if (haystack.charAt(i) == needle.charAt(j)) {
+                i++;
+                j++;
+            } else if (j == 0) {
+                i++;
+            } else {
+                j = Nextval[j];
+            }
+        }
+        if (j >= len2)
+            return i - j;
+        return -1;
+    }
+
+    public void getNext(int[] Next, int[] Nextval, String str2) {
+        int i = 2;
+        int k = 0;
+        Next[0] = -1;
+        Next[1] = 0;
+        Nextval[0] = -1;
+        Nextval[1] = 0;
+        int len2 = str2.length();
+
+        while (i < len2) {
+            if (str2.charAt(i - 1) == str2.charAt(k)) {
+                Next[i] = k + 1;
+                if (str2.charAt(i) != str2.charAt(Next[i]))
+                    Nextval[i] = Next[i];
+                else
+                    Nextval[i] = Nextval[Next[i]];
+                k = k + 1;
+                i++;
+            } else if (k == 0) {
+                Next[i] = 0;
+                Nextval[i] = 0;
+                i++;
+            } else {
+                k = Nextval[k];
+            }
+        }
+    }
+}
+```
+
+简洁版：
+
+* 
+
+```
+class Solution {
+    public int strStr(String haystack, String needle) {
+        int len1 = haystack.length(), len2 = needle.length();
+        int[] Next = new int[len2 + 1];
+        int[] Nextval = new int[len2 + 1];
+        for (int i = 2, k = 0; i < len2; ++i) {
+            while (k > 0 && needle.charAt(i - 1) != needle.charAt(k)) {
+                k = Nextval[k];
+            }
+            if (needle.charAt(i - 1) == needle.charAt(k)) {
+                Next[i] = k + 1;
+                if (needle.charAt(Next[i]) != needle.charAt(i)) {
+                    Nextval[i] = Next[i];
+                } else {
+                    Nextval[i] = Nextval[Next[i]];
+                }
+                ++k;
+            }
+        }
+        for (int i = 0, j = 0; i < len1; ++i) {
+            while (j > 0 && haystack.charAt(i) != needle.charAt(j)) {
+                j = Nextval[j];
+            }
+            if (haystack.charAt(i) == needle.charAt(j))
+                ++j;
+            if (j >= len2) return i - j + 1;
+        }
+        return -1;
+    }
+}
+```
+

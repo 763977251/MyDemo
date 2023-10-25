@@ -27,3 +27,7 @@ hs_err_pid*
 /**/mvnw
 /**/mvnw.cmd
 /**/*.iml
+/**/target
+/**/*rebel.xml
+/**/.gradle
+/**/build

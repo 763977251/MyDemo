@@ -26,7 +26,7 @@ public class InMemoryBookRepository implements BookRepository{
 
     @Override
     public Mono<Book> save(Book book) {
-        books.put(book.getId(), book);
+//        books.put(book.getId(), book);
         return Mono.just(book);
     }
 
