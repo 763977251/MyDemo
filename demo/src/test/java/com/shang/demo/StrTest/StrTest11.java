@@ -33,6 +33,13 @@ public class StrTest11 {
         System.out.println(Arrays.asList(orgPathId.split("/")));
     }
 
+    @Test
+    public void test2221(){
+        LocalDate localDate = LocalDate.now();
+        int monthValue = localDate.getMonthValue();
+        System.out.println(StringUtils.leftPad(String.valueOf(monthValue),2,"0"));
+    }
+
 
     @Test
     public void test22(){
