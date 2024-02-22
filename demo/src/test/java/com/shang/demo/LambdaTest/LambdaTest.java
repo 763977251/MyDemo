@@ -22,4 +22,17 @@ public class LambdaTest {
 
 
     }
+
+    @Test
+    public void test2(){
+        TestUser testUser = TestUser.builder().id("1").name("1").build();
+        TestUser testUser2 = TestUser.builder().id("2").name("22").build();
+        TestUser testUser3 = TestUser.builder().id("2").name(null).build();
+        TestUser testUser4 = TestUser.builder().id("2").name("22").build();
+        List<TestUser> testUsers = Arrays.asList(testUser, testUser2, testUser3, testUser4);
+
+        // 字段为null也可以进行分组，默认为"null"字符串
+        Map<String, List<TestUser>> collect = testUsers.stream().collect(Collectors.groupingBy(ele -> String.join("_", ele.getId(), ele.getName())));
+        System.out.println(collect);
+    }
 }
