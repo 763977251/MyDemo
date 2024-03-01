@@ -40,4 +40,10 @@ public class TestTableController {
         return new JsonResponse<>(testTableService.list());
     }
 
+    @GetMapping("/test-table/testTransactional")
+    public JsonResponse<String> testTransactional(){
+        testTableService.testTransactional();
+        return JsonResponse.success();
+    }
+
 }
