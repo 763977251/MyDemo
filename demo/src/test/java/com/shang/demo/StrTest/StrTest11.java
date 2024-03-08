@@ -51,8 +51,8 @@ public class StrTest11 {
 
     @Test
     public void test2(){
-        String orgPathId = "sss,十四说四十,,221、234、12323,w3r34";
-        String[] split = orgPathId.split("[, 、]");
+        String orgPathId = "sss,十四说四十,,22 1、234、12323,w3r34";
+        String[] split = orgPathId.split("[,、]");
         System.out.println(Arrays.asList(split));
     }
     @Test
