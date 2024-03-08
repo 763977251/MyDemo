@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class StrTest11 {
     public static void main(String[] args) {
@@ -61,5 +62,9 @@ public class StrTest11 {
 //        String orgPathId = "11223623000098";
         System.out.println(orgPathId.substring(0,orgPathId.lastIndexOf("-")+1));
         System.out.println(orgPathId.substring(0,orgPathId.length() - 1));
+    }
+    @Test
+    public void test4(){
+        System.out.println(Objects.equals(null, null));
     }
 }
