@@ -65,6 +65,7 @@ public class StrTest11 {
     }
     @Test
     public void test4(){
+        // 返回true
         System.out.println(Objects.equals(null, null));
     }
 }
