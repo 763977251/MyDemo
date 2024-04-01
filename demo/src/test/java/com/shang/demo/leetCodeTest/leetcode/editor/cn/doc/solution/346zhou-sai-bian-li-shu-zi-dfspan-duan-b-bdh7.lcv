@@ -1,0 +1,50 @@
+## 思路
+
+1.遍历9~n，判断其中每一个数是否满足。
+2.判断方法：将某一个数字当成字符串，dfs出每一种字符串如果符合直接返回。
+
+## 复杂度分析
+
+遍历每个数，然后递归判断
+时间：O(n)
+
+使用ans存结果，空间为n，n次递归，每次递归最多8位，看为常数。
+空间：O(n)
+
+* 
+
+```
+class Solution {
+public:
+    int punishmentNumber(int n) {
+        vector<int> ans = {1};
+        // 返回n 内所有满足的数
+        check(ans, n);
+        int sum = 0;
+        for(auto & num : ans) {
+            // cout<<num<<' ';
+            sum += num;
+        }
+        return sum;
+    }
+    // 保存n 内所有满足的数
+    void check(vector<int> & ans, int n) {
+        for(int i = 9; i <= n; ++i) {
+            flag = false;
+            string tep = to_string(i * i);
+            dfs(i, tep, 0);
+            if(flag) ans.push_back(i * i);
+        }
+    }
+    bool flag;
+    
+    void dfs(int n, string & s, int index) {
+        if(flag == true || n < 0) return ;
+        if(n == 0 && index == s.size()) flag = true;
+        for(int i = index; i < s.size(); ++i) {
+            dfs(n - stoi(s.substr(index, i - index + 1)), s, i + 1);
+        }
+    }
+};
+```
+

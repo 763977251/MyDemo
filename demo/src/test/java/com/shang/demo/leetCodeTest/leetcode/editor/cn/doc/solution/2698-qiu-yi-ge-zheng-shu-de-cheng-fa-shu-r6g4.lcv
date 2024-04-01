@@ -1,0 +1,59 @@
+> Problem: [2698. 求一个整数的惩罚数](https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/description/)
+
+[TOC]
+
+# 思路
+
+即对1-n内所有数先求平方,对每个平方数判断是否条件成立
+
+对于一个平方数, 所谓分割, 就是让一个分割段的最后一个数作为个位数, 前一个数作为十位...
+
+故对一个平方数从个位向高位处理, 下一位x可能另起一段,在sum中加上x,也可能和上个数同一段,如果前一位数是个位数, 就在sum中加上x*10...
+
+这个部分用递归完成
+
+# 复杂度
+
+n\<1000, 所以平方数长度最多7位,除了1000最多6位, 每个数递归最多6!次, 总复杂度差不多1e6
+
+# Code
+
+* []
+
+```Java
+
+class Solution {
+    int raw=0;
+    int tmp[];
+    int tmpLen=0;
+    int ee[]=new int[10];
+    private boolean regOk(int sum ,int last,int pos){
+        if(pos==tmpLen){
+            if(sum==raw)return true;
+            else return false;
+        }else {
+            if(regOk(sum+tmp[pos+1],0,pos+1)|| regOk(sum+tmp[pos+1]*ee[last+1],last+1,pos+1))return true;
+            else return false;
+        }
+    }
+    public int punishmentNumber(int n) {
+        ee[0]=1;
+        for(int i=1;i<10;++i)ee[i]=ee[i-1]*10;
+        int cnt=0;
+        tmp=new int[10];
+        int tmpi=0;
+        for(int i=1;i<=n;++i){
+            tmpi=i*i;
+            raw=i;
+            tmpLen=0;
+            while(tmpi>0){
+                tmp[tmpLen++]=tmpi%10;
+                tmpi/=10;
+            }tmpLen--;
+            if(regOk(tmp[0],0,0)==true)cnt+=i*i;
+        }
+        return cnt;
+    }
+}
+```
+

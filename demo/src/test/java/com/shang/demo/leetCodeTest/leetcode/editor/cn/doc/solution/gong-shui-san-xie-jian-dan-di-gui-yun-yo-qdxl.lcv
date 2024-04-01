@@ -1,0 +1,221 @@
+## 写在前面
+
+好久不见（~~一个意想不到的回归~~ 🤣
+
+---
+
+## 递归
+
+一个朴素的做法是遍历 $[1, i]$，若当前数值 $i$ 满足要求，则将 $i \times i$ 累加到答案中。
+
+问题关键转为：如何判定 $i \times i$ 是否能够分割成多个整数，使其累加值为 $i$。
+
+简单做法是通过递归来做：每次从当前值的低位开始截取，通过「取余」和「地板除」操作，得到截取部分和剩余部分，再继续递归处理。
+
+代码：
+
+* []
+
+```Java
+class Solution {
+    public int punishmentNumber(int n) {
+        int ans = 0;
+        for (int i = 1; i <= n; i++) {
+            if (check(i * i, i)) ans += i * i;
+        }
+        return ans;
+    }
+    boolean check(int t, int x) {
+        if (t == x) return true;
+        int d = 10;
+        while (t >= d && t % d <= x) {
+            if (check(t / d, x - (t % d))) return true;
+            d *= 10;
+        }
+        return false;
+    }
+}
+```
+
+* []
+
+```Python
+class Solution:
+    def punishmentNumber(self, n: int) -> int:
+        def check(t, x):
+            if t == x:
+                return True
+            d = 10
+            while t >= d and t % d <= x:
+                if check(t // d, x - (t % d)):
+                    return True
+                d *= 10
+            return False
+        return sum([i * i if check(i * i, i) else 0 for i in range(1, n + 1)])
+```
+
+* []
+
+```C++
+class Solution {
+public:
+    bool check(int t, int x) {
+        if (t == x) return true;
+        int d = 10;
+        while (t >= d && t % d <= x) {
+            if (check(t / d, x - (t % d))) return true;
+            d *= 10;
+        }
+        return false;
+    }
+    int punishmentNumber(int n) {
+        int ans = 0;
+        for (int i = 1; i <= n; i++) {
+            if (check(i * i, i)) ans += i * i;
+        }
+        return ans;
+    }
+};
+```
+
+* []
+
+```TypeScript
+function punishmentNumber(n: number): number {
+    function check(t: number, x: number): boolean {
+        if (t === x) return true;
+        let d = 10;
+        while (t >= d && t % d <= x) {
+            if (check(Math.floor(t / d), x - (t % d))) return true;
+            d *= 10;
+        }
+        return false;
+    }
+    let ans = 0;
+    for (let i = 1; i <= n; i++) {
+        if (check(i * i, i)) ans += i * i;
+    }
+    return ans;
+};
+```
+
+* 时间复杂度：$O(n \log{n^2})$
+* 空间复杂度：$O(\log{n^2})$
+
+---
+
+## 打表
+
+更进一步，对于 $[1, x]$ 范围内的惩罚数必然包含了 $[1, y]$（其中 $y < x$）中的惩罚数。
+
+即多个样例之间必然存在重复计算，我们可通过「打表」进行预处理：定义 $f[i]$ 为 $n = i$ 时的答案（惩罚数），对于 $f[i]$ 而言，起始为 $f[i - 1]$，若数值 $i$ 本身满足要求，则将 $i \times i$ 累加到 $f[i]$ 当中。
+
+代码：
+
+* []
+
+```Java
+class Solution {
+    static int[] f = new int[1010];
+    static {
+        for (int i = 1; i <= 1000; i++) {
+            f[i] = f[i - 1];
+            if (check(i * i, i)) f[i] += i * i;
+        }
+    }
+    static boolean check(int t, int x) {
+        if (t == x) return true;
+        int d = 10;
+        while (t >= d && t % d <= x) {
+            if (check(t / d, x - (t % d))) return true;
+            d *= 10;
+        }
+        return false;
+    }
+    public int punishmentNumber(int n) {
+        return f[n];
+    }
+}
+```
+
+* []
+
+```Python
+def check(t, x):
+    if t == x:
+        return True
+    d = 10
+    while t >= d and t % d <= x:
+        if check(t // d, x - (t % d)):
+            return True
+        d *= 10
+    return False
+f = [0] * 1010
+for i in range(1, 1010):
+    f[i] = f[i - 1] + (i * i if check(i * i, i) else 0)
+class Solution:
+    def punishmentNumber(self, n: int) -> int:
+        return f[n]
+```
+
+* []
+
+```C++
+inline bool check(int t, int x) {
+    if (t == x) return true;
+    int d = 10;
+    while (t >= d && t % d <= x) {
+        if (check(t / d, x - (t % d))) return true;
+        d *= 10;
+    }
+    return false;
+}
+int f[1010];
+int _ = []() {
+    for (int i = 1; i < 1010; i++) {
+        f[i] = f[i - 1];
+        if (check(i * i, i)) f[i] += i * i;
+    }
+    return 0;
+}();
+class Solution {
+public:
+    int punishmentNumber(int n) {
+        return f[n];
+    }
+};
+```
+
+* []
+
+```TypeScript
+function check(t: number, x: number): boolean {
+    if (t === x) return true;
+    let d = 10;
+    while (t >= d && t % d <= x) {
+        if (check(Math.floor(t / d), x - (t % d))) return true;
+        d *= 10;
+    }
+    return false;
+}
+const f = new Array(1010).fill(0);
+for (let i = 1; i < 1010; i++) {
+    f[i] = f[i - 1];
+    if (check(i * i, i)) f[i] += i * i;
+}
+function punishmentNumber(n: number): number {
+    return f[n];
+};
+```
+
+* 时间复杂度：$O(1)$
+* 空间复杂度：$O(C)$，其中 $C = 1000$
+
+---
+
+## 最后
+
+**如果有帮助到你，请给题解点个赞和收藏，让更多的人看到 ~ ("▔□▔)/**
+
+所有题解已经加入 [刷题指南](https://github.com/SharingSource/LogicStack-LeetCode/wiki)，欢迎 star 哦 ~
+

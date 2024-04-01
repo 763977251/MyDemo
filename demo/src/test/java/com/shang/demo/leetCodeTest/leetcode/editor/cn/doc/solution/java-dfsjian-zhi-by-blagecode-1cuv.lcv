@@ -1,0 +1,40 @@
+解题思路：将数字转化为字符串，按照索引下标从小到大(从左往右)进行分割。每次遍历中切下一刀，获取当前分割所得到数字串(前半段)，剩余的字符串(后半段)继续递归搜索。
+
+**剪枝**：如果当前分割得到的数字，加上**前面累加计算得到的结果sum**后，超出了 i ,那么说明当前这一刀分割后，累加统计得到的结果已经超出了i的大小范围，因此后面的位置都不需要再进行分割。
+
+举例：25×25=625。第一刀分割后得到62，而此时62大于25，因此无论是继续拿剩下数字串的5进行dfs递归，还是往后遍历第一刀切的位置(在5后面得到625)，所得到的结果肯定都比62大，因此剪枝。
+
+* 
+
+```
+class Solution {
+    boolean valid=false;
+    public int punishmentNumber(int n) {
+        int ans=0;
+        for(int i=1;i<=n;i++){
+            int mul=i*i;
+            valid=false;
+            dfs(String.valueOf(mul),i,0);
+            ans+=valid?mul:0;
+        }
+        return ans;
+    }
+    public void dfs(String curr,int a,int sum){
+        for(int i=0;i<curr.length();i++){
+            String cut=curr.substring(0,i+1);
+            int ans=sum+Integer.valueOf(cut);
+            if(ans>a||valid)
+            return ;
+            if(i==curr.length()-1){
+                if(ans==a)
+                valid=true;
+                return;
+            }
+            dfs(curr.substring(i+1,curr.length()),a,ans);
+        }
+        
+    }
+    
+}
+```
+

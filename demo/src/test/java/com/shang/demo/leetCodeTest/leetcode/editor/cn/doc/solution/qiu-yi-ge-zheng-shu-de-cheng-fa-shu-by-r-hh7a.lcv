@@ -1,0 +1,34 @@
+> Problem: [2698. 求一个整数的惩罚数](https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/description/)
+
+# Code
+
+* []
+
+```Java
+
+class Solution {
+    public int punishmentNumber(int n) {
+        int ans = 0;
+        for(int i = 1; i <= n; i++){
+            if(recursive(i * i, i)){
+                ans += i * i;
+            }
+        }    
+        return ans;
+    }
+
+    boolean recursive(int n, int target){
+        if(n == target) return true;
+        if(n < target) return false;
+       
+        for(int base = 10; base <= n; base *= 10){
+            if(recursive(n % base, target - n / base)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+}
+```
+

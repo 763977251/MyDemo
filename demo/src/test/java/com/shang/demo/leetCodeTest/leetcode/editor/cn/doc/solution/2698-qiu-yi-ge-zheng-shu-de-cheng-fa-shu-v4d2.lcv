@@ -1,0 +1,35 @@
+* 
+
+```
+class Solution {
+public:
+void dfs(string n, int pos, int rest, bool& su) {
+    if (pos == n.size() || su) {
+        if (rest == 0) {
+            su = true;
+        }
+        return;
+    }
+
+    for (int i = pos; i < n.size(); ++i) {
+        int num = 0;
+        for (int j = i; j >= pos; --j) {
+            num += pow(10, i - j) * (n[j] - '0');
+        }
+        dfs(n, i + 1, rest - num, su);
+    }
+}
+
+int punishmentNumber(int n) {
+    int res = 0;
+    for (int i = 1; i <= n; ++i) {
+        string m = to_string(i * i);
+        bool su = false;
+        dfs(m, 0, i, su);
+        if (su) { res += (i * i); }
+    }
+    return res;
+}
+};
+```
+

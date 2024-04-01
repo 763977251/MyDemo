@@ -1,0 +1,82 @@
+> Problem: [2698. 求一个整数的惩罚数](https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/description/)
+
+[TOC]
+
+# 思路
+
+1. 枚举 i：从 1 遍历到 n。
+
+2. 计算 i 的平方值：简单的数学运算。
+
+3. 将平方值转换为字符串：这样可以方便地获取各个数字或者子字符串。
+
+4. 尝试所有可能的子字符串组合：这是解题的核心部分。因为 i 的最大值是     1000，所以 i 的平方的最大值是 1000000，这意味着最多只有 7 个数字。因此，暴力搜索所有的可能子字符串组合是可行的。
+
+5. 检查子字符串的和：将找到的子字符串转换回整数并求和，看是否等于 i。
+   记录满足条件的 i 的平方：如果满足条件，将 i 的平方累加到结果中。
+
+# 解题方法
+
+1. 开始于字符串的第一个字符。
+2. 尝试取 1 个字符、2 个字符、3 个字符...，直到字符串的末尾。
+3. 对于每种取法，递归处理字符串的剩余部分。
+4. 如果在某个时刻，子字符串的和等于 i，那么我们知道这个 i 是满足条件的。
+
+# Code
+
+* []
+
+```C++
+
+class Solution {
+public:
+	/*
+		num: 要检查的数字。
+		s: num 的平方的字符串表示。
+		stringIndex: 当前考虑的 s 中的字符的位置。
+		sum: 到目前为止从 s 中提取的数字的和
+	*/
+	bool check(int num, string& s, int stringIndex, int sum)
+	{
+		if (stringIndex == s.length())
+		{
+			// 如果都考虑完了，那么检查sum是否等于num
+			return sum == num;
+		}
+		int currentNum = 0;
+		for (int i = stringIndex; i < s.length(); i++)
+		{
+			//开始从s中提取数字
+			currentNum = currentNum * 10 + (s[i] - '0');
+			if (currentNum + sum > num) {
+				// 如果当前数字加上之前的数字的和大于num本身，那么意味着我们不必在这棵树上吊死
+				return false;
+			}
+			// 开始递归找s中的下一个数字
+			// 需要更新的数据：更新当前下标、更新当前的sum
+			if (check(num, s, i + 1, currentNum + sum))
+			{
+				return true;
+			}
+		}
+		// 如果递归完了并且sum也不等于num本身，那么就是都没有找到
+		return false;
+	}
+	int punishmentNumber(int n)
+	{
+		int result = 0;
+		for (int i = 1; i <= n; i++)
+		{
+			// 先得到每一个数字的开平方是多少
+			int square = i * i;
+			string squareStr = to_string(square);
+			// 检查当前的数字是否“合法”
+			if (check(i, squareStr, 0, 0)) {
+				result += square;
+			}
+		}
+		return result;
+	}
+};
+```
+
