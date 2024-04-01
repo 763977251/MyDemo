@@ -1,23 +1,35 @@
 server:
   port: 9006
 
-spring:
-  mail:
-    #smtp服务主机  qq邮箱则为smtp.qq.com
-    host: smtp.qq.com
-    #服务协议
-    protocol: smtp
-    # 编码集
-    default-encoding: UTF-8
-    #发送邮件的账户
-    username: XXXXXXXXXX@qq.com
-    #授权码
-    password: XXXXXXXXXXXX
-    test-connection: true
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
+#spring:
+#  mail:
+#    #smtp服务主机  qq邮箱则为smtp.qq.com
+#    host: smtp.qq.com
+#    #服务协议
+#    protocol: smtp
+#    # 编码集
+#    default-encoding: UTF-8
+#    #发送邮件的账户
+#    username: XXXXXXXXXX@qq.com
+#    #授权码
+#    password: XXXXXXXXXXXX
+#    test-connection: true
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
+#            required: true
+
+mail:
+  #邮件接收配置
+  receive:
+    isSSL: true
+    host: imap.qq.com
+    port: 993
+    #接收邮件账户
+    userName: XXXXXXX@qq.com
+    #密码传授权码
+    passWord: XXXXXXXXXXXXXX
+    attachmentDir: D:\XXXXXX
