@@ -1,0 +1,46 @@
+# 解法
+
+## 思路和算法
+
+将十进制数 $n$ 转换成 $k$ 进制数的方法是：当 $n \ne 0$ 时，每次将 $n$ 除以 $k$，反向取余数，直到 $n$ 变成零，即可得到原始 $n$ 的 $k$ 进制表示。
+
+转换过程中可以得到十进制数 $n$ 对应的 $k$ 进制表示的每一位，将得到的每一位的数加到各位数字的总和。转换结束之后，即可得到十进制数 $n$ 对应的 $k$ 进制表示的各位数字总和。
+
+## 代码
+
+* [sol1-Java]
+
+```Java
+class Solution {
+    public int sumBase(int n, int k) {
+        int sum = 0;
+        while (n != 0) {
+            sum += n % k;
+            n /= k;
+        }
+        return sum;
+    }
+}
+```
+
+* [sol1-C#]
+
+```C#
+public class Solution {
+    public int SumBase(int n, int k) {
+        int sum = 0;
+        while (n != 0) {
+            sum += n % k;
+            n /= k;
+        }
+        return sum;
+    }
+}
+```
+
+## 复杂度分析
+
+- 时间复杂度：$O(\log_k n)$，其中 $n$ 是给定的整数，$k$ 是给定的进制数。整数 $n$ 对应的 $k$ 进制表示的位数是 $O(\log_k n)$，需要遍历 $k$ 进制表示的每一位。
+
+- 空间复杂度：$O(1)$。
+
