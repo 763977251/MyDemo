@@ -3,6 +3,8 @@ package com.shang.demo.dateTest;
 import org.assertj.core.util.DateUtil;
 import org.junit.jupiter.api.Test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -98,6 +100,15 @@ public class DateTest {
         Date today = DateUtil.parseDatetime("2022-03-16T00:00:00");
         Date startDay = DateUtil.parseDatetime("2022-03-16T19:00:00");
         System.out.println(cn.hutool.core.date.DateUtil.isSameDay(startDay, today));
+    }
+
+    @Test
+    public void testFormat() throws ParseException {
+//        String time = "2024/11/15 0:00:00.0";
+        String time = "2024-10-23 00:00:00.0";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/M/d");
+        Date parse = sdf.parse(time.substring(0, time.indexOf(" ")));
+        System.out.println(parse);
     }
 
     @Test
