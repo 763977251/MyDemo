@@ -104,10 +104,10 @@ public class DateTest {
 
     @Test
     public void testFormat() throws ParseException {
-//        String time = "2024/11/15 0:00:00.0";
-        String time = "2024-10-23 00:00:00.0";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/M/d");
-        Date parse = sdf.parse(time.substring(0, time.indexOf(" ")));
+        String time = "2024/8/7 0:00:00.0";
+//        String time = "2024/8/23";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        Date parse = sdf.parse(time);
         System.out.println(parse);
     }
 
