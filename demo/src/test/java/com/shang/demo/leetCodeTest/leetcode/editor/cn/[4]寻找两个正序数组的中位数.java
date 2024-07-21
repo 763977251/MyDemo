@@ -39,7 +39,7 @@ package com.shang.demo.leetCodeTest.leetcode.editor.cn;//给定两个大小分�
 
 
 //leetcode submit region begin(Prohibit modification and deletion)
-class Solution {
+class Solution_4 {
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
 
         return 1;
